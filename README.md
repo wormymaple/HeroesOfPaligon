@@ -1,2 +1,3 @@
 # HeroesOfPaligon
-Developer repo for Heroes of Paligon
+```
+#art by Peyton
