@@ -22,11 +22,16 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* HexMesh;
+	UPROPERTY(EditAnywhere)
+	UMaterial* HexMat;
 
 	UPROPERTY(EditAnywhere)
 	float Dist;
 	UPROPERTY(EditAnywhere)
 	int SideWidth;
+
+	UPROPERTY(EditAnywhere)
+	FVector SpawnOffset;
 
 public:	
 	// Called every frame

@@ -28,31 +28,29 @@ void AHexGenerator::Tick(float DeltaTime)
 }
 
 void AHexGenerator::GenerateHexes(){
-	float DepthX = 0.f, DepthY = 0.f;
-	float LH = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
+	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
+	float depthX = -((SideWidth - 1) / 2.f) * Dist, depthY = (SideWidth - 1) * lh;
 
 	for (int i = 0; i < SideWidth + SideWidth - 1; i++){
-		int Offset;
-		if (i < SideWidth / 2){
-			Offset = 1;
-		}
-		else{
-			Offset = SideWidth - (i % SideWidth);
-		}
+		int layerCount, shiftDir;	
+		layerCount = i < SideWidth ? SideWidth + i : (2 * SideWidth) - (i % SideWidth) - 2;
+		shiftDir = i < SideWidth - 1 ? -1 : 1; 
 
-		for (int j = 0; j < SideWidth + Offset; j += 1){
+		for (int j = 0; j < layerCount; j += 1){
 			FActorSpawnParameters Params;
-			FVector SpawnPoint = FVector(DepthX + (j * Dist), DepthY, 0);
+			FVector SpawnPoint = FVector(depthX + (j * Dist), depthY, SpawnOffset.Z);
 
 			AStaticMeshActor* NewHex = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
 			NewHex->SetMobility(EComponentMobility::Movable);
 			NewHex->SetActorLocation(SpawnPoint);
 			NewHex->SetActorScale3D(FVector(0.05f, 0.05f, 0.05f));
-			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetStaticMesh(HexMesh);
+			UStaticMeshComponent* HexMeshComp = NewHex->GetComponentByClass<UStaticMeshComponent>();
+			HexMeshComp->SetStaticMesh(HexMesh);
+			HexMeshComp->SetMaterial(0, HexMat);
 		}
 
-		DepthX += (Dist / 2) * (Offset == 1 ? -1 : 1);
-		DepthY -= LH;
+		depthX += (Dist / 2) * shiftDir;
+		depthY -= lh;
 	}
 }
 
