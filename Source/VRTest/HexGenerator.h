@@ -32,16 +32,19 @@ protected:
 	int SideWidth;
 
 	UPROPERTY(EditAnywhere)
-	AActor* PawnActor;
+	UBlueprint* PawnActor;
 
 	UPROPERTY(EditAnywhere)
 	FVector SpawnOffset;
+
+	UPROPERTY(EditAnywhere)
+	FVector PawnOffset;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category="Hex")
-	void InteractWithPawn(AActor* InPawnActor);
+	void InteractWithPawn(USceneComponent* InPawnActor);
 
 };

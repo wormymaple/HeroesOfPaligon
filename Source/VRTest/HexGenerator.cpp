@@ -18,6 +18,7 @@ void AHexGenerator::BeginPlay()
 	Super::BeginPlay();
 
 	GenerateHexes();
+	SpawnPawn();
 }
 
 // Called every frame
@@ -56,10 +57,15 @@ void AHexGenerator::GenerateHexes(){
 }
 
 void AHexGenerator::SpawnPawn(){
-	AActor* spawnedPawn = GetWorld()->SpawnActor<AActor>(AActor::StaticClass());
+	FActorSpawnParameters Params;
+	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
+
+	UStaticMeshComponent* PawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
+	PawnMesh->GetOwner()->SetActorLocation(SpawnOffset + PawnOffset);
+
 }
 
-void AHexGenerator::InteractWithPawn(AActor* InPawnActor){
+void AHexGenerator::InteractWithPawn(USceneComponent* PawnIn){
 	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("PAWN INPUT RECIEVED"));
 }
 
