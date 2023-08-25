@@ -19,6 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	void GenerateHexes();
+	void SpawnPawn();
 
 	UPROPERTY(EditAnywhere)
 	UStaticMesh* HexMesh;
@@ -31,10 +32,16 @@ protected:
 	int SideWidth;
 
 	UPROPERTY(EditAnywhere)
+	AActor* PawnActor;
+
+	UPROPERTY(EditAnywhere)
 	FVector SpawnOffset;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable, Category="Hex")
+	void InteractWithPawn(AActor* InPawnActor);
 
 };

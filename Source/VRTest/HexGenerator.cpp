@@ -25,6 +25,7 @@ void AHexGenerator::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+
 }
 
 void AHexGenerator::GenerateHexes(){
@@ -52,5 +53,13 @@ void AHexGenerator::GenerateHexes(){
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
 	}
+}
+
+void AHexGenerator::SpawnPawn(){
+	AActor* spawnedPawn = GetWorld()->SpawnActor<AActor>(AActor::StaticClass());
+}
+
+void AHexGenerator::InteractWithPawn(AActor* InPawnActor){
+	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("PAWN INPUT RECIEVED"));
 }
 
