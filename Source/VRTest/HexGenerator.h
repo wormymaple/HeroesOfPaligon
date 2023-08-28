@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "HexGenerator.generated.h"
 
 UCLASS()
@@ -39,6 +40,8 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	FVector PawnOffset;
+
+	TArray<AActor*> Hexes;
 
 public:	
 	// Called every frame

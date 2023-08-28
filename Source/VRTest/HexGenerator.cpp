@@ -49,6 +49,8 @@ void AHexGenerator::GenerateHexes(){
 			UStaticMeshComponent* HexMeshComp = NewHex->GetComponentByClass<UStaticMeshComponent>();
 			HexMeshComp->SetStaticMesh(HexMesh);
 			HexMeshComp->SetMaterial(0, HexMat);
+
+			Hexes.Add(NewHex);
 		}
 
 		depthX += (Dist / 2) * shiftDir;
@@ -62,8 +64,6 @@ void AHexGenerator::SpawnPawn(){
 
 	UStaticMeshComponent* PawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
 	PawnMesh->GetOwner()->SetActorLocation(SpawnOffset + PawnOffset);
-
-	PawnMesh->SetSimulatePhysics(true);
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
@@ -72,5 +72,19 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 
 void AHexGenerator::DropPawn(AActor* InPawnActor){
 	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Blue, TEXT("Pawn Dropped!"));
+	FVector pawnPos = InPawnActor->GetActorLocation();
+
+	AActor* closestHex = Hexes[0];
+	float closestDist = FVector::Dist(pawnPos, closestHex->GetActorLocation());
+	for (AActor* hex : Hexes){
+		float dist = FVector::Dist(pawnPos, hex->GetActorLocation());
+		if (dist < closestDist){
+			closestHex = hex;
+			closestDist = dist;
+		}
+	}
+
+	InPawnActor->SetActorLocation(closestHex->GetActorLocation() + PawnOffset);
+	InPawnActor->SetActorRotation(FRotator(0, 0, 0), ETeleportType::ResetPhysics);
 }
 
