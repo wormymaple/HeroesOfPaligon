@@ -66,7 +66,11 @@ void AHexGenerator::SpawnPawn(){
 	PawnMesh->SetSimulatePhysics(true);
 }
 
-void AHexGenerator::InteractWithPawn(USceneComponent* PawnIn){
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("PAWN INPUT RECIEVED"));
+void AHexGenerator::PickUpPawn(AActor* InPawnActor){
+	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("Pawn Picked Up!"));
+}
+
+void AHexGenerator::DropPawn(AActor* InPawnActor){
+	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Blue, TEXT("Pawn Dropped!"));
 }
 

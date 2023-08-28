@@ -45,6 +45,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable, Category="Hex")
-	void InteractWithPawn(USceneComponent* InPawnActor);
+	void PickUpPawn(AActor* InPawnActor);
+
+	UFUNCTION(BlueprintCallable, Category="Hex")
+	void DropPawn(AActor* InPawnActor);
 
 };
