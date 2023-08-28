@@ -63,7 +63,7 @@ void AHexGenerator::SpawnPawn(){
 	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
 
 	UStaticMeshComponent* PawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
-	PawnMesh->GetOwner()->SetActorLocation(SpawnOffset + PawnOffset);
+	PawnMesh->GetOwner()->SetActorLocation(FVector(0, 1000, 0));
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
