@@ -63,7 +63,6 @@ void AHexGenerator::SpawnPawn(){
 	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
 
 	UStaticMeshComponent* PawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
-	PawnMesh->GetOwner()->SetActorLocation(FVector(0, 1000, 0));
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
@@ -72,7 +71,9 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 
 void AHexGenerator::DropPawn(AActor* InPawnActor){
 	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Blue, TEXT("Pawn Dropped!"));
-	FVector pawnPos = InPawnActor->GetActorLocation();
+	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
+
+	FVector pawnPos = pawnMesh->GetRelativeLocation();
 
 	AActor* closestHex = Hexes[0];
 	float closestDist = FVector::Dist(pawnPos, closestHex->GetActorLocation());
@@ -84,7 +85,7 @@ void AHexGenerator::DropPawn(AActor* InPawnActor){
 		}
 	}
 
-	InPawnActor->SetActorLocation(closestHex->GetActorLocation() + PawnOffset);
-	InPawnActor->SetActorRotation(FRotator(0, 0, 0), ETeleportType::ResetPhysics);
+	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
+	pawnMesh->SetWorldRotation(FRotator(0, 0, 0));
 }
 
