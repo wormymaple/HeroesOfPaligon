@@ -97,7 +97,7 @@ void AHexGenerator::DropPawn(AActor* InPawnActor){
 	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Blue, TEXT("Pawn Dropped!"));
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 
-	FVector pawnPos = pawnMesh->GetRelativeLocation();
+	FVector pawnPos = pawnMesh->GetComponentLocation();
 
 	AActor* closestHex = Hexes[0];
 	float closestDist = FVector::Dist(pawnPos, closestHex->GetActorLocation());
