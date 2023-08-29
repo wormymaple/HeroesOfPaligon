@@ -42,13 +42,8 @@ void AHexGenerator::GenerateHexes(){
 			FActorSpawnParameters Params;
 			FVector SpawnPoint = FVector(depthX + (j * Dist), depthY, SpawnOffset.Z);
 
-			AStaticMeshActor* NewHex = GetWorld()->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass());
-			NewHex->SetMobility(EComponentMobility::Movable);
+			AActor* NewHex = GetWorld()->SpawnActor<AActor>(HexBlueprint->GeneratedClass, Params);
 			NewHex->SetActorLocation(SpawnPoint);
-			NewHex->SetActorScale3D(FVector(0.05f, 0.05f, 0.05f));
-			UStaticMeshComponent* HexMeshComp = NewHex->GetComponentByClass<UStaticMeshComponent>();
-			HexMeshComp->SetStaticMesh(HexMesh);
-			HexMeshComp->SetMaterial(0, HexMat);
 
 			Hexes.Add(NewHex);
 		}
@@ -69,7 +64,7 @@ void AHexGenerator::SpawnPawn(){
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 	TArray<AActor*> surroundingHexes;
-	FVector pawnPos = pawnMesh->GetRelativeLocation();
+	FVector pawnPos = pawnMesh->GetComponentLocation();
 	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Black, FString::Printf(TEXT("%f, %f, %f"), pawnPos.X, pawnPos.Y, pawnPos.Z));
 	for (AActor* hex : Hexes)
 	{

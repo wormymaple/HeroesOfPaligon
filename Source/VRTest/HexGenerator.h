@@ -23,9 +23,7 @@ protected:
 	void SpawnPawn();
 
 	UPROPERTY(EditAnywhere)
-	UStaticMesh* HexMesh;
-	UPROPERTY(EditAnywhere)
-	UMaterial* HexMat;
+	UBlueprint* HexBlueprint;
 
 	UPROPERTY(EditAnywhere)
 	float Dist;
