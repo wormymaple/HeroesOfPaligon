@@ -61,12 +61,33 @@ void AHexGenerator::GenerateHexes(){
 void AHexGenerator::SpawnPawn(){
 	FActorSpawnParameters Params;
 	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
-
-	UStaticMeshComponent* PawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("Pawn Picked Up!"));
+
+	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
+	TArray<AActor*> surroundingHexes;
+	FVector pawnPos = pawnMesh->GetRelativeLocation();
+	for (AActor* hex : Hexes)
+	{
+		FVector hexPos = hex->GetActorLocation();
+		float dist = FVector2D::Distance(FVector2D(hexPos.X, hexPos.Y), FVector2D(pawnPos.X, pawnPos.Y));
+
+		if (dist < Dist + 5 && dist > 2)
+		{
+			surroundingHexes.Add(hex);
+		}
+	}
+
+	for (AActor* hex : surroundingHexes)
+	{
+		FVector hexPos = hex->GetActorLocation();
+		FActorSpawnParameters Params;
+
+		AActor* newHighlight = GetWorld()->SpawnActor<AActor>(HighlightMesh->GeneratedClass, Params);
+		newHighlight->SetActorLocation(hexPos + PawnOffset);
+	}
 }
 
 void AHexGenerator::DropPawn(AActor* InPawnActor){

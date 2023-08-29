@@ -34,6 +34,8 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UBlueprint* PawnActor;
+	UPROPERTY(EditAnywhere)
+	UBlueprint* HighlightMesh;
 
 	UPROPERTY(EditAnywhere)
 	FVector SpawnOffset;
@@ -42,6 +44,7 @@ protected:
 	FVector PawnOffset;
 
 	TArray<AActor*> Hexes;
+	FVector StartGrabPos;
 
 public:	
 	// Called every frame
