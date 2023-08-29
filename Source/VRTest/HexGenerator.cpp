@@ -67,11 +67,10 @@ void AHexGenerator::SpawnPawn(){
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Green, TEXT("Pawn Picked Up!"));
-
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 	TArray<AActor*> surroundingHexes;
 	FVector pawnPos = pawnMesh->GetRelativeLocation();
+	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Black, FString::Printf(TEXT("%f, %f, %f"), pawnPos.X, pawnPos.Y, pawnPos.Z));
 	for (AActor* hex : Hexes)
 	{
 		FVector hexPos = hex->GetActorLocation();
@@ -94,11 +93,10 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 }
 
 void AHexGenerator::DropPawn(AActor* InPawnActor){
-	GEngine->AddOnScreenDebugMessage(1, 5, FColor::Blue, TEXT("Pawn Dropped!"));
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 
 	FVector pawnPos = pawnMesh->GetComponentLocation();
-
+	
 	AActor* closestHex = Hexes[0];
 	float closestDist = FVector::Dist(pawnPos, closestHex->GetActorLocation());
 	for (AActor* hex : Hexes){
