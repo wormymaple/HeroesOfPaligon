@@ -61,6 +61,9 @@ void AHexGenerator::GenerateHexes(){
 void AHexGenerator::SpawnPawn(){
 	FActorSpawnParameters Params;
 	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
+
+	UStaticMeshComponent* pawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
+	pawnMesh->SetRelativeLocation(FVector(0, 100, 0));
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
@@ -109,4 +112,13 @@ void AHexGenerator::DropPawn(AActor* InPawnActor){
 	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator(0, 0, 0));
 }
+
+void AHexGenerator::PlacePawnRandomly(AActor* InPawnActor)
+{
+	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
+
+	pawnMesh->SetRelativeLocation(Hexes[FMath::RandRange(0, Hexes.Num() - 1)]->GetActorLocation() + PawnOffset);
+	PickUpPawn(InPawnActor);
+}
+
 

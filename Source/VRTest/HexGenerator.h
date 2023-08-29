@@ -55,5 +55,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="Hex")
 	void DropPawn(AActor* InPawnActor);
+	
+	UFUNCTION(BlueprintCallable, Category="Hex")
+	void PlacePawnRandomly(AActor* InPawnActor);
 
 };
