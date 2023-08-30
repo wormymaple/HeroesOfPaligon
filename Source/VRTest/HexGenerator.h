@@ -42,6 +42,7 @@ protected:
 	FVector PawnOffset;
 
 	TArray<AActor*> Hexes;
+	TArray<AActor*> SpawnedHiglights;
 	FVector StartGrabPos;
 
 public:	

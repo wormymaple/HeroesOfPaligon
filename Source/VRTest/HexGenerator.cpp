@@ -77,6 +77,7 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 		}
 	}
 
+	SpawnedHiglights.Empty();
 	for (AActor* hex : surroundingHexes)
 	{
 		FVector hexPos = hex->GetActorLocation();
@@ -84,6 +85,7 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 
 		AActor* newHighlight = GetWorld()->SpawnActor<AActor>(HighlightMesh->GeneratedClass, Params);
 		newHighlight->SetActorLocation(hexPos + PawnOffset);
+		SpawnedHiglights.Add(newHighlight);
 	}
 }
 
@@ -100,6 +102,11 @@ void AHexGenerator::DropPawn(AActor* InPawnActor){
 			closestHex = hex;
 			closestDist = dist;
 		}
+	}
+
+	for (AActor* highlight : SpawnedHiglights)
+	{
+		GetWorld()->DestroyActor(highlight);
 	}
 
 	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
