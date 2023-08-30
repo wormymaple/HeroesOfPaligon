@@ -63,6 +63,9 @@ void AHexGenerator::SpawnPawn(){
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor)
 {
+	if (Interacting) return;
+	Interacting = true;
+	
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 	AvailableHexes.Empty();
 	FVector pawnPos = pawnMesh->GetComponentLocation();
@@ -91,6 +94,8 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor)
 }
 
 void AHexGenerator::DropPawn(AActor* InPawnActor){
+	Interacting = false;
+	
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 
 	FVector pawnPos = pawnMesh->GetComponentLocation();

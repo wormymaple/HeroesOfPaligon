@@ -44,7 +44,7 @@ protected:
 	TArray<AActor*> Hexes;
 	TArray<AActor*> SpawnedHiglights;
 	TArray<AActor*> AvailableHexes;
-	FVector StartGrabPos;
+	bool Interacting;
 
 public:	
 	// Called every frame
