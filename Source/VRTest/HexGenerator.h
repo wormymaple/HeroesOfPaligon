@@ -43,6 +43,7 @@ protected:
 
 	TArray<AActor*> Hexes;
 	TArray<AActor*> SpawnedHiglights;
+	TArray<AActor*> AvailableHexes;
 	FVector StartGrabPos;
 
 public:	

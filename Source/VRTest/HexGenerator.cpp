@@ -58,12 +58,12 @@ void AHexGenerator::SpawnPawn(){
 	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
 
 	UStaticMeshComponent* pawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
-	pawnMesh->SetRelativeLocation(FVector(0, 100, 0));
+	pawnMesh->SetRelativeLocation(SpawnOffset + PawnOffset);
 }
 
 void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
-	TArray<AActor*> surroundingHexes;
+	AvailableHexes.Empty();
 	FVector pawnPos = pawnMesh->GetComponentLocation();
 	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Black, FString::Printf(TEXT("%f, %f, %f"), pawnPos.X, pawnPos.Y, pawnPos.Z));
 	for (AActor* hex : Hexes)
@@ -73,12 +73,12 @@ void AHexGenerator::PickUpPawn(AActor* InPawnActor){
 
 		if (dist < Dist + 5 && dist > 2)
 		{
-			surroundingHexes.Add(hex);
+			AvailableHexes.Add(hex);
 		}
 	}
 
 	SpawnedHiglights.Empty();
-	for (AActor* hex : surroundingHexes)
+	for (AActor* hex : AvailableHexes)
 	{
 		FVector hexPos = hex->GetActorLocation();
 		FActorSpawnParameters Params;
@@ -96,7 +96,7 @@ void AHexGenerator::DropPawn(AActor* InPawnActor){
 	
 	AActor* closestHex = Hexes[0];
 	float closestDist = FVector::Dist(pawnPos, closestHex->GetActorLocation());
-	for (AActor* hex : Hexes){
+	for (AActor* hex : AvailableHexes){
 		float dist = FVector::Dist(pawnPos, hex->GetActorLocation());
 		if (dist < closestDist){
 			closestHex = hex;
