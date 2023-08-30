@@ -61,7 +61,8 @@ void AHexGenerator::SpawnPawn(){
 	pawnMesh->SetRelativeLocation(SpawnOffset + PawnOffset);
 }
 
-void AHexGenerator::PickUpPawn(AActor* InPawnActor){
+void AHexGenerator::PickUpPawn(AActor* InPawnActor)
+{
 	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
 	AvailableHexes.Empty();
 	FVector pawnPos = pawnMesh->GetComponentLocation();
