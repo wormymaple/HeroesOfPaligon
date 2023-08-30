@@ -44,6 +44,7 @@ void AHexGenerator::GenerateHexes(){
 
 			AActor* NewHex = GetWorld()->SpawnActor<AActor>(HexBlueprint->GeneratedClass, Params);
 			NewHex->SetActorLocation(SpawnPoint);
+			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(EComponentMobility::Static);
 
 			Hexes.Add(NewHex);
 		}
