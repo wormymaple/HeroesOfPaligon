@@ -75,3 +75,5 @@ DerivedDataCache/*
 
 # Developer content
 Content/Developers/*
+
+.DS_Store
