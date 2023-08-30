@@ -100,7 +100,7 @@ void AHexGenerator::DropPawn(AActor* InPawnActor){
 
 	FVector pawnPos = pawnMesh->GetComponentLocation();
 	
-	AActor* closestHex;
+	AActor* closestHex = AvailableHexes[0];
 	float closestDist = 10000000;
 	for (AActor* hex : AvailableHexes){
 		float dist = FVector::Dist(pawnPos, hex->GetActorLocation());
