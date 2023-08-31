@@ -7,7 +7,7 @@
 
 #include "HexGenerator.generated.h"
 
-UCLASS()
+UCLASS(ShowCategories=("Transform"))
 class VRTEST_API AHexGenerator : public AActor
 {
 	GENERATED_BODY()
@@ -19,26 +19,28 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 	void GenerateHexes();
 	void SpawnPawn();
 
-	UPROPERTY(EditAnywhere)
-	UBlueprint* HexBlueprint;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UBlueprint* HexBlueprint = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Dist;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int SideWidth;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBlueprint* PawnActor;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBlueprint* HighlightMesh;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector SpawnOffset;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector PawnOffset;
 
 	TArray<AActor*> Hexes;

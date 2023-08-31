@@ -9,7 +9,6 @@ AHexGenerator::AHexGenerator()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -17,7 +16,6 @@ void AHexGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GenerateHexes();
 	SpawnPawn();
 }
 
@@ -29,10 +27,24 @@ void AHexGenerator::Tick(float DeltaTime)
 
 }
 
-void AHexGenerator::GenerateHexes(){
-	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
-	float depthX = -((SideWidth - 1) / 2.f) * Dist, depthY = (SideWidth - 1) * lh;
+void AHexGenerator::OnConstruction(const FTransform& Transform)
+{
+	GenerateHexes();
+}
 
+
+void AHexGenerator::GenerateHexes(){
+	for (AActor* hex : Hexes)
+	{
+		GetWorld()->DestroyActor(hex);
+	}
+	Hexes.Empty();
+	
+	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
+	FVector pos = GetActorLocation();
+	float depthX = -((SideWidth - 1) / 2.f) * Dist + pos.X, depthY = (SideWidth - 1) * lh + pos.Y;
+
+	int hexCount = 0;
 	for (int i = 0; i < SideWidth + SideWidth - 1; i++){
 		int layerCount, shiftDir;	
 		layerCount = i < SideWidth ? SideWidth + i : (2 * SideWidth) - (i % SideWidth) - 2;
@@ -46,7 +58,9 @@ void AHexGenerator::GenerateHexes(){
 			NewHex->SetActorLocation(SpawnPoint);
 			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(EComponentMobility::Static);
 
+			NewHex->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 			Hexes.Add(NewHex);
+			hexCount += 1;
 		}
 
 		depthX += (Dist / 2) * shiftDir;
