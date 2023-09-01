@@ -7,7 +7,7 @@
 
 #include "HexGenerator.generated.h"
 
-UCLASS(ShowCategories=("Transform"))
+UCLASS()
 class VRTEST_API AHexGenerator : public AActor
 {
 	GENERATED_BODY()
@@ -23,9 +23,11 @@ protected:
 	void GenerateHexes();
 	void SpawnPawn();
 
+	void ApplyPlains();
+
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UBlueprint* HexBlueprint = nullptr;
+	UBlueprint* HexBlueprint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Dist;
@@ -47,6 +49,11 @@ protected:
 	TArray<AActor*> SpawnedHiglights;
 	TArray<AActor*> AvailableHexes;
 	bool Interacting;
+
+	UPROPERTY(EditAnywhere)
+	float OffsetHeight;
+	UPROPERTY(EditAnywhere)
+	float Wavelength;
 
 public:	
 	// Called every frame

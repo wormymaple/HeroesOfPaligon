@@ -3,6 +3,7 @@
 
 #include "HexGenerator.h"
 #include "Engine/StaticMeshActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AHexGenerator::AHexGenerator()
@@ -30,6 +31,7 @@ void AHexGenerator::Tick(float DeltaTime)
 void AHexGenerator::OnConstruction(const FTransform& Transform)
 {
 	GenerateHexes();
+	ApplyPlains();
 }
 
 
@@ -38,6 +40,7 @@ void AHexGenerator::GenerateHexes(){
 	{
 		GetWorld()->DestroyActor(hex);
 	}
+	
 	Hexes.Empty();
 	
 	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
@@ -56,15 +59,31 @@ void AHexGenerator::GenerateHexes(){
 
 			AActor* NewHex = GetWorld()->SpawnActor<AActor>(HexBlueprint->GeneratedClass, Params);
 			NewHex->SetActorLocation(SpawnPoint);
+			NewHex->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(EComponentMobility::Static);
 
-			NewHex->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 			Hexes.Add(NewHex);
 			hexCount += 1;
 		}
 
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
+	}
+}
+
+void AHexGenerator::ApplyPlains()
+{
+	for (AActor* hex : Hexes)
+	{
+		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
+		hexMesh->SetMobility(EComponentMobility::Movable);
+		
+		FVector hexPos = hex->GetActorLocation();
+		float height = FMath::Sin(hexPos.X * Wavelength) + FMath::Cos(hexPos.Y * Wavelength);
+		height *= OffsetHeight;
+		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, SpawnOffset.Z + height));
+
+		hexMesh->SetMobility(EComponentMobility::Static);
 	}
 }
 
