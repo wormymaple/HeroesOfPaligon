@@ -55,6 +55,8 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float Wavelength;
 
+	int OldSideWidth;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

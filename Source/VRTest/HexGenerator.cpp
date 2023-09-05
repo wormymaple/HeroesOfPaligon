@@ -17,6 +17,7 @@ void AHexGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
 	SpawnPawn();
 }
 
@@ -35,7 +36,12 @@ void AHexGenerator::OnConstruction(const FTransform& Transform)
 }
 
 
-void AHexGenerator::GenerateHexes(){
+void AHexGenerator::GenerateHexes()
+{
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
+	if (OldSideWidth == SideWidth) return;
+
+	// Destroy old hexes
 	for (AActor* hex : Hexes)
 	{
 		GetWorld()->DestroyActor(hex);
@@ -58,6 +64,7 @@ void AHexGenerator::GenerateHexes(){
 			FVector SpawnPoint = FVector(depthX + (j * Dist), depthY, SpawnOffset.Z);
 
 			AActor* NewHex = GetWorld()->SpawnActor<AActor>(HexBlueprint->GeneratedClass, Params);
+			NewHex->SetActorLabel(FString::Printf(TEXT("Hex%i"), hexCount));
 			NewHex->SetActorLocation(SpawnPoint);
 			NewHex->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
 			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(EComponentMobility::Static);
@@ -69,6 +76,8 @@ void AHexGenerator::GenerateHexes(){
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
 	}
+
+	OldSideWidth = SideWidth;
 }
 
 void AHexGenerator::ApplyPlains()
