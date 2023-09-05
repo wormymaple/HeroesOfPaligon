@@ -56,6 +56,10 @@ protected:
 	float Wavelength;
 
 	int OldSideWidth;
+	float OldDist;
+
+	UPROPERTY(EditAnywhere)
+	UMaterial* PlainsMat;
 
 public:	
 	// Called every frame

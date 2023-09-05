@@ -39,7 +39,7 @@ void AHexGenerator::OnConstruction(const FTransform& Transform)
 void AHexGenerator::GenerateHexes()
 {
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
-	if (OldSideWidth == SideWidth) return;
+	if (OldSideWidth == SideWidth && OldDist == Dist) return;
 
 	// Destroy old hexes
 	for (AActor* hex : Hexes)
@@ -78,6 +78,7 @@ void AHexGenerator::GenerateHexes()
 	}
 
 	OldSideWidth = SideWidth;
+	OldDist = Dist;
 }
 
 void AHexGenerator::ApplyPlains()
@@ -91,6 +92,7 @@ void AHexGenerator::ApplyPlains()
 		float height = FMath::Sin(hexPos.X * Wavelength) + FMath::Cos(hexPos.Y * Wavelength);
 		height *= OffsetHeight;
 		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, SpawnOffset.Z + height));
+		hexMesh->SetMaterial(0, PlainsMat);
 
 		hexMesh->SetMobility(EComponentMobility::Static);
 	}
