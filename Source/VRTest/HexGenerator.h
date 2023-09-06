@@ -59,7 +59,7 @@ protected:
 	float OldDist;
 
 	UPROPERTY(EditAnywhere)
-	UMaterial* PlainsMat;
+	TArray<UMaterial*> TypeMaterials;
 
 public:	
 	// Called every frame

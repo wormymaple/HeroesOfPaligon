@@ -89,10 +89,19 @@ void AHexGenerator::ApplyPlains()
 		hexMesh->SetMobility(EComponentMobility::Movable);
 		
 		FVector hexPos = hex->GetActorLocation();
-		float height = FMath::Sin(hexPos.X * Wavelength) + FMath::Cos(hexPos.Y * Wavelength);
-		height *= OffsetHeight;
+		float noise1 =  FMath::PerlinNoise2D(FVector2D(hexPos.X, hexPos.Y) * Wavelength); 
+		float height = noise1 * OffsetHeight;
 		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, SpawnOffset.Z + height));
-		hexMesh->SetMaterial(0, PlainsMat);
+
+		if (TypeMaterials.Num() != 0)
+		{
+			int matIndex = ((noise1 + 1) / 2) * TypeMaterials.Num();
+			UMaterial* TileMat = TypeMaterials[matIndex];
+			if (TileMat != nullptr)
+			{
+				hexMesh->SetMaterial(0, TileMat);
+			}
+		}
 
 		hexMesh->SetMobility(EComponentMobility::Static);
 	}
