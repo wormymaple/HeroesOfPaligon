@@ -3,13 +3,13 @@
 
 #include "HexGenerator.h"
 #include "Engine/StaticMeshActor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AHexGenerator::AHexGenerator()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -17,7 +17,7 @@ void AHexGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GenerateHexes();
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
 	SpawnPawn();
 }
 
@@ -29,10 +29,31 @@ void AHexGenerator::Tick(float DeltaTime)
 
 }
 
-void AHexGenerator::GenerateHexes(){
-	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
-	float depthX = -((SideWidth - 1) / 2.f) * Dist, depthY = (SideWidth - 1) * lh;
+void AHexGenerator::OnConstruction(const FTransform& Transform)
+{
+	GenerateHexes();
+	ApplyPlains();
+}
 
+
+void AHexGenerator::GenerateHexes()
+{
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
+	if (OldSideWidth == SideWidth && OldDist == Dist) return;
+
+	// Destroy old hexes
+	for (AActor* hex : Hexes)
+	{
+		GetWorld()->DestroyActor(hex);
+	}
+	
+	Hexes.Empty();
+	
+	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
+	FVector pos = GetActorLocation();
+	float depthX = -((SideWidth - 1) / 2.f) * Dist + pos.X, depthY = (SideWidth - 1) * lh + pos.Y;
+
+	int hexCount = 0;
 	for (int i = 0; i < SideWidth + SideWidth - 1; i++){
 		int layerCount, shiftDir;	
 		layerCount = i < SideWidth ? SideWidth + i : (2 * SideWidth) - (i % SideWidth) - 2;
@@ -43,13 +64,46 @@ void AHexGenerator::GenerateHexes(){
 			FVector SpawnPoint = FVector(depthX + (j * Dist), depthY, SpawnOffset.Z);
 
 			AActor* NewHex = GetWorld()->SpawnActor<AActor>(HexBlueprint->GeneratedClass, Params);
+			NewHex->SetActorLabel(FString::Printf(TEXT("Hex%i"), hexCount));
 			NewHex->SetActorLocation(SpawnPoint);
+			NewHex->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
+			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(EComponentMobility::Static);
 
 			Hexes.Add(NewHex);
+			hexCount += 1;
 		}
 
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
+	}
+
+	OldSideWidth = SideWidth;
+	OldDist = Dist;
+}
+
+void AHexGenerator::ApplyPlains()
+{
+	for (AActor* hex : Hexes)
+	{
+		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
+		hexMesh->SetMobility(EComponentMobility::Movable);
+		
+		FVector hexPos = hex->GetActorLocation();
+		float noise1 =  FMath::PerlinNoise2D(FVector2D(hexPos.X, hexPos.Y) * Wavelength); 
+		float height = noise1 * OffsetHeight;
+		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, SpawnOffset.Z + height));
+
+		if (TypeMaterials.Num() != 0)
+		{
+			int matIndex = ((noise1 + 1) / 2) * TypeMaterials.Num();
+			UMaterial* TileMat = TypeMaterials[matIndex];
+			if (TileMat != nullptr)
+			{
+				hexMesh->SetMaterial(0, TileMat);
+			}
+		}
+
+		hexMesh->SetMobility(EComponentMobility::Static);
 	}
 }
 
