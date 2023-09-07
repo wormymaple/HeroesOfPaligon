@@ -3,45 +3,28 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ProceduralModifier.h"
 #include "GameFramework/Actor.h"
-
-#include "HexGenerator.generated.h"
+#include "PlainsModifier.generated.h"
 
 UCLASS()
-class VRTEST_API AHexGenerator : public AActor
+class VRTEST_API APlainsModifier : public AActor, public IProceduralModifier
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	AHexGenerator();
+	APlainsModifier();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	virtual void OnConstruction(const FTransform& Transform) override;
-	void GenerateHexes();
-
-	void ApplyPlains();
-
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UBlueprint* HexBlueprint;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Dist;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int SideWidth;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector SpawnOffset;
-
-	TArray<AActor*> Hexes;
-
 	UPROPERTY(EditAnywhere)
 	FVector2D NoisePos;
 	
+	UPROPERTY(EditAnywhere)
+	float StartHeight;
 	UPROPERTY(EditAnywhere)
 	float OffsetHeight;
 	
@@ -57,12 +40,14 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float SecondNoiseScale;
-
-	int OldSideWidth;
-	float OldDist;
-
+	
 	UPROPERTY(EditAnywhere)
 	TArray<UMaterial*> TypeMaterials;
 
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	virtual void ModifyHexes() override;
+	virtual void OnConstruction(const FTransform& Transform) override;
 
 };
