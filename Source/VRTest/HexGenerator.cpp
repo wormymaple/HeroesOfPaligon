@@ -29,7 +29,6 @@ void AHexGenerator::OnConstruction(const FTransform& Transform)
 void AHexGenerator::GenerateHexes()
 {
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
-	if (OldSideWidth == SideWidth && OldDist == Dist) return;
 
 	// Destroy old hexes
 	for (AActor* hex : Hexes)
@@ -65,52 +64,6 @@ void AHexGenerator::GenerateHexes()
 
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
-	}
-
-	OldSideWidth = SideWidth;
-	OldDist = Dist;
-}
-
-void AHexGenerator::ApplyPlains()
-{
-	for (AActor* hex : Hexes)
-	{
-		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
-		hexMesh->SetMobility(EComponentMobility::Movable);
-		
-		FVector hexPos = hex->GetActorLocation();
-		FVector2D GenNoisePos = FVector2D(hexPos.X, hexPos.Y) + NoisePos;
-		
-		float noise1 =  FMath::Clamp(FMath::PerlinNoise2D(GenNoisePos * NoiseScale) + NoiseOffset, 0, 1 + NoiseOffset); 
-		float height = noise1 * OffsetHeight;
-		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, SpawnOffset.Z + height));
-
-		float noise2 = FMath::PerlinNoise2D(GenNoisePos * SecondNoiseScale);
-
-		if (TypeMaterials.Num() != 0)
-		{
-			UMaterial* TileMat;
-			if (noise1 <= LowPassCutoff)
-			{
-				TileMat = TypeMaterials[0];
-			}
-			else if (noise1 >= HighPassCutoff)
-			{
-				TileMat = TypeMaterials[TypeMaterials.Num() - 1];
-			}
-			else
-			{
-				int matIndex = ((noise2 + 1) / 2) * (TypeMaterials.Num() - 2);
-				TileMat = TypeMaterials[matIndex + 1];
-			}
-			
-			if (TileMat != nullptr)
-			{
-				hexMesh->SetMaterial(0, TileMat);
-			}
-		}
-
-		hexMesh->SetMobility(EComponentMobility::Static);
 	}
 }
 

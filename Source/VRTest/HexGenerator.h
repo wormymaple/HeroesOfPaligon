@@ -39,30 +39,5 @@ protected:
 
 	TArray<AActor*> Hexes;
 
-	UPROPERTY(EditAnywhere)
-	FVector2D NoisePos;
-	
-	UPROPERTY(EditAnywhere)
-	float OffsetHeight;
-	
-	UPROPERTY(EditAnywhere)
-	float NoiseOffset;
-	UPROPERTY(EditAnywhere)
-	float NoiseScale;
-
-	UPROPERTY(EditAnywhere)
-	float HighPassCutoff;
-	UPROPERTY(EditAnywhere)
-	float LowPassCutoff;
-	
-	UPROPERTY(EditAnywhere)
-	float SecondNoiseScale;
-
-	int OldSideWidth;
-	float OldDist;
-
-	UPROPERTY(EditAnywhere)
-	TArray<UMaterial*> TypeMaterials;
-
 
 };
