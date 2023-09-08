@@ -9,7 +9,7 @@
 AHexGenerator::AHexGenerator()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
@@ -18,28 +18,17 @@ void AHexGenerator::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
-	SpawnPawn();
-}
-
-// Called every frame
-void AHexGenerator::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-
 }
 
 void AHexGenerator::OnConstruction(const FTransform& Transform)
 {
 	GenerateHexes();
-	ApplyPlains();
 }
 
 
 void AHexGenerator::GenerateHexes()
 {
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
-	if (OldSideWidth == SideWidth && OldDist == Dist) return;
 
 	// Destroy old hexes
 	for (AActor* hex : Hexes)
@@ -76,109 +65,6 @@ void AHexGenerator::GenerateHexes()
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
 	}
-
-	OldSideWidth = SideWidth;
-	OldDist = Dist;
-}
-
-void AHexGenerator::ApplyPlains()
-{
-	for (AActor* hex : Hexes)
-	{
-		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
-		hexMesh->SetMobility(EComponentMobility::Movable);
-		
-		FVector hexPos = hex->GetActorLocation();
-		float noise1 =  FMath::PerlinNoise2D(FVector2D(hexPos.X, hexPos.Y) * Wavelength); 
-		float height = noise1 * OffsetHeight;
-		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, SpawnOffset.Z + height));
-
-		if (TypeMaterials.Num() != 0)
-		{
-			int matIndex = ((noise1 + 1) / 2) * TypeMaterials.Num();
-			UMaterial* TileMat = TypeMaterials[matIndex];
-			if (TileMat != nullptr)
-			{
-				hexMesh->SetMaterial(0, TileMat);
-			}
-		}
-
-		hexMesh->SetMobility(EComponentMobility::Static);
-	}
-}
-
-void AHexGenerator::SpawnPawn(){
-	FActorSpawnParameters Params;
-	AActor* NewPawn = GetWorld()->SpawnActor<AActor>(PawnActor->GeneratedClass, Params);
-
-	UStaticMeshComponent* pawnMesh = NewPawn->GetComponentByClass<UStaticMeshComponent>();
-	pawnMesh->SetRelativeLocation(SpawnOffset + PawnOffset);
-}
-
-void AHexGenerator::PickUpPawn(AActor* InPawnActor)
-{
-	if (Interacting) return;
-	Interacting = true;
-	
-	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
-	AvailableHexes.Empty();
-	FVector pawnPos = pawnMesh->GetComponentLocation();
-	GEngine->AddOnScreenDebugMessage(1, 2, FColor::Black, FString::Printf(TEXT("%f, %f, %f"), pawnPos.X, pawnPos.Y, pawnPos.Z));
-	for (AActor* hex : Hexes)
-	{
-		FVector hexPos = hex->GetActorLocation();
-		float dist = FVector2D::Distance(FVector2D(hexPos.X, hexPos.Y), FVector2D(pawnPos.X, pawnPos.Y));
-
-		if (dist < Dist + 5 && dist > 2)
-		{
-			AvailableHexes.Add(hex);
-		}
-	}
-
-	SpawnedHiglights.Empty();
-	for (AActor* hex : AvailableHexes)
-	{
-		FVector hexPos = hex->GetActorLocation();
-		FActorSpawnParameters Params;
-
-		AActor* newHighlight = GetWorld()->SpawnActor<AActor>(HighlightMesh->GeneratedClass, Params);
-		newHighlight->SetActorLocation(hexPos + PawnOffset);
-		SpawnedHiglights.Add(newHighlight);
-	}
-}
-
-void AHexGenerator::DropPawn(AActor* InPawnActor){
-	Interacting = false;
-	
-	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
-
-	FVector pawnPos = pawnMesh->GetComponentLocation();
-	
-	AActor* closestHex = AvailableHexes[0];
-	float closestDist = 10000000;
-	for (AActor* hex : AvailableHexes){
-		float dist = FVector::Dist(pawnPos, hex->GetActorLocation());
-		if (dist < closestDist){
-			closestHex = hex;
-			closestDist = dist;
-		}
-	}
-
-	for (AActor* highlight : SpawnedHiglights)
-	{
-		GetWorld()->DestroyActor(highlight);
-	}
-
-	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
-	pawnMesh->SetWorldRotation(FRotator(0, 0, 0));
-}
-
-void AHexGenerator::PlacePawnRandomly(AActor* InPawnActor)
-{
-	UStaticMeshComponent* pawnMesh = InPawnActor->GetComponentByClass<UStaticMeshComponent>();
-
-	pawnMesh->SetRelativeLocation(Hexes[FMath::RandRange(0, Hexes.Num() - 1)]->GetActorLocation() + PawnOffset);
-	PickUpPawn(InPawnActor);
 }
 
 
