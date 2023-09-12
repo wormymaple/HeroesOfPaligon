@@ -3,6 +3,8 @@
 
 #include "CoastalModifier.h"
 
+#include "HexComponent.h"
+
 // Sets default values
 ACoastalModifier::ACoastalModifier()
 {
@@ -31,6 +33,7 @@ void ACoastalModifier::ModifyHexes()
 	for (AActor* hex : Hexes)
 	{
 		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
+		UHexComponent* hexComponent = hex->GetComponentByClass<UHexComponent>();
 		
 		FVector hexPos = hex->GetActorLocation();
 		FVector2D noiseGenPos = FVector2D(hexPos.X, hexPos.Y) + NoisePos;
@@ -45,6 +48,7 @@ void ACoastalModifier::ModifyHexes()
 		{
 			hexMesh->SetMaterial(0, RockMat);
 			hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, HexHeight + rockNoise * RockHeight));
+			hexComponent->Type = HexType::Rock;
 			continue;
 		}
 
