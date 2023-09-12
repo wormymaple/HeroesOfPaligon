@@ -62,8 +62,7 @@ void ACoastalModifier::ModifyHexes()
 
 				if (i == 0)
 				{
-					hexMesh->SetStaticMesh(WaterMesh);
-					hexMat = WaterMat;
+					hexMesh->SetStaticMesh(nullptr);
 				}
 				else if (i == SandLayer)
 				{
