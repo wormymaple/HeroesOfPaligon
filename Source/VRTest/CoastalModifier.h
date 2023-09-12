@@ -56,4 +56,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<UMaterial*> Mats;
+
+	UPROPERTY(EditAnywhere)
+	UStaticMesh* WaterMesh;
+	UPROPERTY(EditAnywhere)
+	UMaterial* WaterMat;
 };

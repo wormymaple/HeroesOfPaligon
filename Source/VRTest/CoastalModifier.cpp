@@ -59,8 +59,13 @@ void ACoastalModifier::ModifyHexes()
 			if (noise1 <= LowPassFilters[i])
 			{
 				UMaterial* hexMat = Mats[i];
-				
-				if (i == SandLayer)
+
+				if (i == 0)
+				{
+					hexMesh->SetStaticMesh(WaterMesh);
+					hexMat = WaterMat;
+				}
+				else if (i == SandLayer)
 				{
 					FRandomStream rand = FRandomStream(noise1 * 255);
 					if (static_cast<float>(rand.RandRange(0, 100)) / 100 < RockChance) hexMat = RockMat;
