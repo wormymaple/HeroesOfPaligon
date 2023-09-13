@@ -50,6 +50,7 @@ void ATundraModifier::ModifyHexes()
 			hexMesh->SetMaterial(0, RockMat);
 		}
 		else hexMesh->SetMaterial(0, SnowMat);
+		hexMesh->SetVisibility(noise1 > WaterLowPass);
 	}
 	
 	SetHexMobility(EComponentMobility::Static);
