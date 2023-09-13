@@ -66,6 +66,7 @@ void APlainsModifier::ModifyHexes()
 				int matIndex = ((noise2 + 1) / 2) * (TypeMaterials.Num() - 2);
 				TileMat = TypeMaterials[matIndex + 1];
 			}
+			hexMesh->SetVisibility(noise1 > LowPassCutoff);
 			
 			if (TileMat != nullptr)
 			{

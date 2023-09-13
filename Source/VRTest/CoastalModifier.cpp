@@ -46,6 +46,7 @@ void ACoastalModifier::ModifyHexes()
 
 		if (rockNoise >= RockNoiseCutoff && noise1 > 0)
 		{
+			hexMesh->SetVisibility(true);
 			hexMesh->SetMaterial(0, RockMat);
 			hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, HexHeight + rockNoise * RockHeight));
 			hexComponent->Type = HexType::Rock;
@@ -60,11 +61,9 @@ void ACoastalModifier::ModifyHexes()
 			{
 				UMaterial* hexMat = Mats[i];
 
-				if (i == 0)
-				{
-					hexMesh->SetStaticMesh(nullptr);
-				}
-				else if (i == SandLayer)
+				hexMesh->SetVisibility(i != 0); // Is water?
+				
+				if (i == SandLayer) // Is sand?
 				{
 					FRandomStream rand = FRandomStream(noise1 * 255);
 					if (static_cast<float>(rand.RandRange(0, 100)) / 100 < RockChance) hexMat = RockMat;
