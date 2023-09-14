@@ -25,9 +25,19 @@ protected:
 	UPROPERTY(EditAnywhere)
 	FVector PawnOffset;
 
+	UPROPERTY(EditAnywhere)
+	UBlueprint* HighlightMesh;
+
+private:
+	TArray<AActor*> SpawnedHighlights;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable)
+	void PickUpPawn(AActor* InPawn);
+	UFUNCTION(BlueprintCallable)
+	void PlacePawn(AActor* InPawn);
 
 	void SpawnPawn();
 	

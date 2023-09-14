@@ -2,6 +2,8 @@
 
 
 #include "HexGenerator.h"
+
+#include "HexComponent.h"
 #include "Engine/StaticMeshActor.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -64,6 +66,12 @@ void AHexGenerator::GenerateHexes()
 
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
+	}
+	
+	for (AActor* hex : Hexes)
+	{
+		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
+		hexComp->GetAdjacentHexes(Dist + 2, Hexes);
 	}
 }
 
