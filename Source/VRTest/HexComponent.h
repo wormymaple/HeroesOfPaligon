@@ -32,7 +32,10 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-
+	void GetAdjacentHexes(float Radius, TArray<AActor*> Hexes);
+	
 	UPROPERTY(VisibleAnywhere)
-	HexType Type = HexType::None;	
+	HexType Type = HexType::None;
+	
+	TArray<UHexComponent*> AdjacentHexes;
 };
