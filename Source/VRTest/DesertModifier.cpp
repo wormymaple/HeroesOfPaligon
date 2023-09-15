@@ -45,6 +45,7 @@ void ADesertModifier::ModifyHexes()
 		if (height <= WaterLowPass)
 		{
 			mat = WaterMat;
+			hexMesh->SetVisibility(false);
 		}
 		else
 		{
@@ -53,6 +54,8 @@ void ADesertModifier::ModifyHexes()
 			{
 				mat = CactusMat;
 			}
+
+			hexMesh->SetVisibility(true);
 		}
 				
 		if (mat != nullptr)

@@ -10,3 +10,12 @@ void IProceduralModifier::GetHexes(UObject* World)
 {
 	UGameplayStatics::GetAllActorsWithTag(World, FName(TEXT("Hex")), Hexes);
 }
+
+void IProceduralModifier::SetHexMobility(EComponentMobility::Type MobilityType)
+{
+	for (AActor* hex : Hexes)
+	{
+		hex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(MobilityType);
+	}
+}
+

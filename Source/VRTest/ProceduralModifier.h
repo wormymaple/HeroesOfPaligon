@@ -24,5 +24,8 @@ class VRTEST_API IProceduralModifier
 public:
 	virtual void ModifyHexes() = 0;
 	void GetHexes(UObject* World);
+	void SetHexMobility(EComponentMobility::Type MobilityType);
+
+	
 	TArray<AActor*> Hexes;
 };
