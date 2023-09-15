@@ -3,8 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HexComponent.h"
+#include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "GameBoardManager.generated.h"
+
+class UPawnPiece;
 
 UCLASS()
 class VRTEST_API AGameBoardManager : public AActor
@@ -28,8 +32,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UBlueprint* HighlightMesh;
 
+	UPROPERTY(EditAnywhere)
+	AStaticMeshActor* GhostPawn;
+
 private:
 	TArray<AActor*> SpawnedHighlights;
+	bool Interacting;
+	UPawnPiece* InteractingPawn;
+
+	UHexComponent* GetClosestHex();
 	
 public:	
 	// Called every frame

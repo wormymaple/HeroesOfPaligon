@@ -30,6 +30,10 @@ void AGameBoardManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (!Interacting) return;
+
+	UHexComponent* closestHex = GetClosestHex();
+	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
 }
 
 void AGameBoardManager::SpawnPawn()
@@ -54,7 +58,12 @@ void AGameBoardManager::SpawnPawn()
 
 void AGameBoardManager::PickUpPawn(AActor* InPawn)
 {
+	if (Interacting) return;
+	Interacting = true;
+	GhostPawn->GetStaticMeshComponent()->SetVisibility(true);
+	
 	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
+	InteractingPawn = pawnComponent;
 	
 	SpawnedHighlights.Empty();
 	UHexComponent* pawnHex = pawnComponent->GetCurrentHex();
@@ -72,16 +81,29 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 
 void AGameBoardManager::PlacePawn(AActor* InPawn)
 {
+	Interacting = false;
+	GhostPawn->GetStaticMeshComponent()->SetVisibility(true);
+	
 	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
 	
 	for (AActor* highlight : SpawnedHighlights) GetWorld()->DestroyActor(highlight);
 	SpawnedHighlights.Empty();
 
+	UHexComponent* closestHex = GetClosestHex();
+	
 	UStaticMeshComponent* pawnMesh = InPawn->GetComponentByClass<UStaticMeshComponent>(); 
+	pawnMesh->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
+	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
+	pawnComponent->SetCurrentHex(closestHex);
+}
+
+UHexComponent* AGameBoardManager::GetClosestHex()
+{
+	UStaticMeshComponent* pawnMesh = InteractingPawn->GetOwner()->GetComponentByClass<UStaticMeshComponent>(); 
 	FVector pawnPos = pawnMesh->GetComponentLocation();
 
 	float closestDist = 9999999999;
-	UHexComponent* pawnHex = pawnComponent->GetCurrentHex();
+	UHexComponent* pawnHex = InteractingPawn->GetCurrentHex();
 	UHexComponent* closestHex = pawnHex->AdjacentHexes[0];
 	for (UHexComponent* adjacentHex : pawnHex->AdjacentHexes)
 	{
@@ -93,10 +115,13 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 		}
 	}
 
-	pawnMesh->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
-	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
-	pawnComponent->SetCurrentHex(closestHex);
+	return closestHex;
 }
+
+
+
+
+
 
 
 
