@@ -82,7 +82,7 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 void AGameBoardManager::PlacePawn(AActor* InPawn)
 {
 	Interacting = false;
-	GhostPawn->GetStaticMeshComponent()->SetVisibility(true);
+	GhostPawn->GetStaticMeshComponent()->SetVisibility(false);
 	
 	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
 	
