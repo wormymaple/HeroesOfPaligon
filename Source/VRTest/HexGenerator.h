@@ -15,6 +15,7 @@ class VRTEST_API AHexGenerator : public AActor
 public:	
 	// Sets default values for this actor's properties
 	AHexGenerator();
+	void GenerateAdjacentHexes();
 
 protected:
 	// Called when the game starts or when spawned
