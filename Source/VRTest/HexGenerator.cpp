@@ -14,12 +14,14 @@ AHexGenerator::AHexGenerator()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
+
 // Called when the game starts or when spawned
 void AHexGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
+	GenerateAdjacentHexes();
 }
 
 void AHexGenerator::OnConstruction(const FTransform& Transform)
@@ -27,6 +29,14 @@ void AHexGenerator::OnConstruction(const FTransform& Transform)
 	GenerateHexes();
 }
 
+void AHexGenerator::GenerateAdjacentHexes()
+{
+	for (AActor* hex : Hexes)
+	{	
+		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
+		hexComp->GetAdjacentHexes(Dist + 2, Hexes);
+	}
+}
 
 void AHexGenerator::GenerateHexes()
 {
@@ -66,12 +76,6 @@ void AHexGenerator::GenerateHexes()
 
 		depthX += (Dist / 2) * shiftDir;
 		depthY -= lh;
-	}
-	
-	for (AActor* hex : Hexes)
-	{
-		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
-		hexComp->GetAdjacentHexes(Dist + 2, Hexes);
 	}
 }
 

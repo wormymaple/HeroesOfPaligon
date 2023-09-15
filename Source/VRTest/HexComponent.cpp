@@ -19,8 +19,6 @@ void UHexComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
 }
 
 
