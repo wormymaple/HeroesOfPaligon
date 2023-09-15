@@ -60,16 +60,23 @@ void ACoastalModifier::ModifyHexes()
 			if (noise1 <= LowPassFilters[i])
 			{
 				UMaterial* hexMat = Mats[i];
+				HexType hexType = HexType::None;
+				if (i < Types.Num()) hexType = Types[i];
 
 				hexMesh->SetVisibility(i != 0); // Is water?
 				
 				if (i == SandLayer) // Is sand?
 				{
 					FRandomStream rand = FRandomStream(noise1 * 255);
-					if (static_cast<float>(rand.RandRange(0, 100)) / 100 < RockChance) hexMat = RockMat;
+					if (static_cast<float>(rand.RandRange(0, 100)) / 100 < RockChance) // Generate rocks
+					{
+						hexMat = RockMat;
+						hexType = HexType::Rock;
+					}
 				}
 				
 				if (hexMat != nullptr) hexMesh->SetMaterial(0, hexMat);
+				hexComponent->Type = hexType;
 				break;
 			}
 		}
