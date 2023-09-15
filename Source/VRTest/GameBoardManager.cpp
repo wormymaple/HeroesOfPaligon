@@ -36,14 +36,20 @@ void AGameBoardManager::SpawnPawn()
 {
 	AActor* newPawn = GetWorld()->SpawnActor(PawnBlueprint->GeneratedClass);
 	newPawn->GetComponentByClass<UPawnPiece>()->BoardManager = this;
+
+	TArray<AActor*> possibleSpawns;
+	
 	for (AActor* hex : Hexes)
 	{
-		if (hex->GetComponentByClass<UHexComponent>()->Type != HexType::Rock) continue;
-		
-		newPawn->SetActorLocation(hex->GetActorLocation() + PawnOffset);
-		newPawn->GetComponentByClass<UPawnPiece>()->SetCurrentHex(hex->GetComponentByClass<UHexComponent>());
-		break;
+		if (hex->GetComponentByClass<UHexComponent>()->Type != HexType::Water)
+		{
+			possibleSpawns.Add(hex);
+		}	
 	}
+
+	AActor* hex = possibleSpawns[FMath::RandRange(0, possibleSpawns.Num() - 1)];
+	newPawn->SetActorLocation(hex->GetActorLocation() + PawnOffset);
+	newPawn->GetComponentByClass<UPawnPiece>()->SetCurrentHex(hex->GetComponentByClass<UHexComponent>());
 }
 
 void AGameBoardManager::PickUpPawn(AActor* InPawn)
@@ -57,7 +63,7 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 	{
 		FVector hexPos = adjacentHex->GetOwner()->GetActorLocation();
 
-		AActor* newHighlight = GetWorld()->SpawnActor(PawnBlueprint->GeneratedClass);
+		AActor* newHighlight = GetWorld()->SpawnActor(HighlightMesh->GeneratedClass);
 		newHighlight->SetActorLocation(hexPos + PawnOffset);
 
 		SpawnedHighlights.Add(newHighlight);

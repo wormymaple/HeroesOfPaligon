@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HexComponent.h"
+#include "PawnPiece.h"
 #include "ProceduralModifier.h"
 #include "GameFramework/Actor.h"
 #include "CoastalModifier.generated.h"
@@ -19,6 +21,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	bool Interacting;
+	UPawnPiece* InteractingPawn;
 
 public:	
 	virtual void OnConstruction(const FTransform& Transform) override;
@@ -56,4 +60,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<UMaterial*> Mats;
+	UPROPERTY(EditAnywhere)
+	TArray<HexType> Types;
 };
