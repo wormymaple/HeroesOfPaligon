@@ -21,6 +21,8 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	bool Interacting;
+	UPawnPiece* InteractingPawn;
 
 public:	
 	virtual void OnConstruction(const FTransform& Transform) override;

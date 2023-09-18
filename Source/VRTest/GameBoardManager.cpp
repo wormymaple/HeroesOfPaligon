@@ -118,10 +118,3 @@ UHexComponent* AGameBoardManager::GetClosestHex()
 	return closestHex;
 }
 
-
-
-
-
-
-
-
