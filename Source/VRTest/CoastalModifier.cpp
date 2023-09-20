@@ -4,6 +4,7 @@
 #include "CoastalModifier.h"
 
 #include "HexComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACoastalModifier::ACoastalModifier()
@@ -29,6 +30,10 @@ void ACoastalModifier::OnConstruction(const FTransform& Transform)
 void ACoastalModifier::ModifyHexes()
 {
 	SetHexMobility(EComponentMobility::Movable);
+
+	TArray<AActor*> details;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("detail")), details);
+	for (AActor* detail : details) GetWorld()->DestroyActor(detail);
 
 	for (AActor* hex : Hexes)
 	{
@@ -79,6 +84,17 @@ void ACoastalModifier::ModifyHexes()
 				hexComponent->Type = hexType;
 				break;
 			}
+		}
+
+		HexType currentHexType = hexComponent->Type;
+
+		if (currentHexType == HexType::Rock && RockDetail != nullptr)
+		{
+			int randRot = FMath::RandRange(0, 360);
+			AActor* detail = GetWorld()->SpawnActor(RockDetail->GeneratedClass);
+			detail->SetActorLocation(hexPos + DetailOffset);
+			detail->SetActorRotation(FRotator(0, randRot, 0));
+			detail->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 		}
 	}
 	
