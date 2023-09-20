@@ -19,6 +19,7 @@ public:
 	UPawnPiece();
 
 protected:
+	UPROPERTY()
 	UHexComponent* CurrentHex;
 	virtual void BeginPlay() override;
 
