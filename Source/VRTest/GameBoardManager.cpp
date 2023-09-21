@@ -54,6 +54,8 @@ void AGameBoardManager::SpawnPawn()
 	AActor* hex = possibleSpawns[FMath::RandRange(0, possibleSpawns.Num() - 1)];
 	newPawn->SetActorLocation(hex->GetActorLocation() + PawnOffset);
 	newPawn->GetComponentByClass<UPawnPiece>()->SetCurrentHex(hex->GetComponentByClass<UHexComponent>());
+
+	SpawnedPawns.Add(newPawn->GetComponentByClass<UPawnPiece>());
 }
 
 void AGameBoardManager::PickUpPawn(AActor* InPawn)
@@ -95,6 +97,11 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 	pawnMesh->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 	pawnComponent->SetCurrentHex(closestHex);
+}
+
+AActor* AGameBoardManager::GetMeeple(int index)
+{
+	return SpawnedPawns[index]->GetOwner();
 }
 
 UHexComponent* AGameBoardManager::GetClosestHex()
