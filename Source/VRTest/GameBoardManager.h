@@ -36,11 +36,16 @@ protected:
 	AStaticMeshActor* GhostPawn;
 
 private:
+	UPROPERTY()
 	TArray<AActor*> SpawnedHighlights;
 	bool Interacting;
+	UPROPERTY()
 	UPawnPiece* InteractingPawn;
 
 	UHexComponent* GetClosestHex();
+
+	UPROPERTY()
+	TArray<UPawnPiece*> SpawnedPawns;
 	
 public:	
 	// Called every frame
@@ -49,8 +54,11 @@ public:
 	void PickUpPawn(AActor* InPawn);
 	UFUNCTION(BlueprintCallable)
 	void PlacePawn(AActor* InPawn);
+	UFUNCTION(BlueprintCallable)
+	AActor* GetMeeple(int index);
 
 	void SpawnPawn();
 	
+	UPROPERTY()
 	TArray<AActor*> Hexes;
 };
