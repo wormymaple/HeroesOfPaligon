@@ -6,6 +6,19 @@
 #include "GameFramework/Actor.h"
 #include "SaveHandler.generated.h"
 
+
+USTRUCT()
+struct FPlayerInfo
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	int UniqueID;
+
+	UPROPERTY()
+	int UsedCharacter;
+};
+
 USTRUCT()
 struct FSaveState
 {
@@ -16,6 +29,42 @@ public:
 	int Race;
 	UPROPERTY()
 	int Color;
+	
+	UPROPERTY()
+	int Wit;
+	UPROPERTY()
+	int Might;
+	UPROPERTY()
+	int Soul;
+	UPROPERTY()
+	int Haste;
+	UPROPERTY()
+	int Vitality;
+};
+
+USTRUCT()
+struct FPlayerPackage
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	FPlayerInfo PlayerInfo;
+
+	UPROPERTY()
+	TArray<FSaveState> CharSaves;
+};
+
+USTRUCT()
+struct FWorldState
+{
+	GENERATED_BODY()
+
+public:
+	UPROPERTY()
+	int SaveID;
+	
+	UPROPERTY()
+	int LastBiome;
 };
 
 UCLASS()
@@ -30,9 +79,14 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	FString SaveDir;
+
+	void CreateDir(FString Dir, IPlatformFile& platformFile);
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	void SaveGame(TArray<FPlayerPackage> Players, int SaveID = 0);
 
 };
