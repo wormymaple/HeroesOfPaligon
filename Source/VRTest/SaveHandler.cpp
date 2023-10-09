@@ -29,11 +29,8 @@ void ASaveHandler::BeginPlay()
 		platformFile.CreateDirectory(*SaveDir);
 	}
 
-	FPlayerPackage newPlayer = FPlayerPackage();
-	newPlayer.CharSaves.Add(FSaveState());
-	newPlayer.PlayerInfo.UniqueID = 0;
-	
-	SaveGame(TArray<FPlayerPackage> {newPlayer});
+	FGameSave readGame = ReadGame(22119);
+	GEngine->AddOnScreenDebugMessage(1, 10, FColor::White, FString::Printf(TEXT("%i"), readGame.WorldState.SaveID));
 }
 
 // Called every frame
@@ -47,42 +44,27 @@ void ASaveHandler::SaveGame(TArray<FPlayerPackage> Players, int SaveID)
 {
 	if (SaveID == 0) SaveID = FMath::RandRange(0, 65536);
 
-	FString CurrentSaveDir = SaveDir + "/SavedGame_" + FString::Printf(TEXT("%i"), SaveID);
-
-	IPlatformFile& platformFile = FPlatformFileManager::Get().GetPlatformFile();
-
-	CreateDir(CurrentSaveDir, platformFile);
-
 	FWorldState newWorldState;
 	newWorldState.SaveID = SaveID;
 
-	FString worldJson = "";
-	FJsonObjectConverter::UStructToJsonObjectString(newWorldState, worldJson, 0, 0);
+	FGameSave newGameSave;
+	newGameSave.WorldState = newWorldState;
+	newGameSave.PlayerPackages = Players;
+	
+	FString json = "";
+	FJsonObjectConverter::UStructToJsonObjectString(newGameSave, json, 0, 0);
 
-	FFileHelper::SaveStringToFile(worldJson, *(CurrentSaveDir + "/WorldData.json"));
+	FFileHelper::SaveStringToFile(json, *(SaveDir + "/GameSave" + FString::Printf(TEXT("%i"), SaveID) + ".json"));
+}
 
-	for (FPlayerPackage player : Players)
-	{
-		int UniqueID = player.PlayerInfo.UniqueID;
+FGameSave ASaveHandler::ReadGame(int SaveID)
+{
+	FString json = "";
+	FFileHelper::LoadFileToString(json, *(SaveDir + "/GameSave" + FString::Printf(TEXT("%i"), SaveID) + ".json"));
+	FGameSave readSave;
+	FJsonObjectConverter::JsonObjectStringToUStruct(json, &readSave, 0, 0);
 
-		FString playerSaveDir = CurrentSaveDir + "/Player_" + FString::Printf(TEXT("%i"), UniqueID);
-		CreateDir(playerSaveDir, platformFile);
-
-		FString playerInfoJson = "";
-		FJsonObjectConverter::UStructToJsonObjectString(player.PlayerInfo, playerInfoJson, 0, 0);
-		FFileHelper::SaveStringToFile(playerInfoJson, *(playerSaveDir + "/PlayerInfo.json"));
-
-		int saveCount = 0;
-		for (FSaveState saveState : player.CharSaves)
-		{
-			FString fileName = "/SaveState_" + FString::Printf(TEXT("%i"), saveCount) + ".json";
-			FString saveStateJson = "";
-			FJsonObjectConverter::UStructToJsonObjectString(saveState, saveStateJson, 0, 0);
-			FFileHelper::SaveStringToFile(saveStateJson, *(playerSaveDir + fileName));
-
-			saveCount += 1;
-		}
-	}
+	return readSave;
 }
 
 void ASaveHandler::CreateDir(FString Dir, IPlatformFile& platformFile)

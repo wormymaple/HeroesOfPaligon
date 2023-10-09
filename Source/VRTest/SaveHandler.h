@@ -67,6 +67,17 @@ public:
 	int LastBiome;
 };
 
+USTRUCT()
+struct FGameSave
+{
+	GENERATED_BODY()
+	UPROPERTY()
+	FWorldState WorldState;
+
+	UPROPERTY()
+	TArray<FPlayerPackage> PlayerPackages;
+};
+
 UCLASS()
 class VRTEST_API ASaveHandler : public AActor
 {
@@ -88,5 +99,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void SaveGame(TArray<FPlayerPackage> Players, int SaveID = 0);
+	FGameSave ReadGame(int SaveID);
 
 };
