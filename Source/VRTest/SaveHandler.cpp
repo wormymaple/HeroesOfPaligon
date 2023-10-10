@@ -3,6 +3,7 @@
 
 #include "SaveHandler.h"
 
+#include "PlayerStats.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
 // Sets default values
@@ -29,8 +30,27 @@ void ASaveHandler::BeginPlay()
 		platformFile.CreateDirectory(*SaveDir);
 	}
 
+	FSaveState newChar;
+	newChar.Mana = 15;
+	newChar.Health = 15;
+
+	newChar.Wit = 5;
+	newChar.Might = 7;
+	newChar.Soul = 4;
+	newChar.Haste = 10;
+	newChar.Vitality = 11;
+	
+	FPlayerPackage newPlayer;
+	newPlayer.CharSaves = TArray<FSaveState> {newChar};
+
+	newPlayer.PlayerInfo.UniqueID = 0;
+	newPlayer.PlayerInfo.UsedCharacter = 0;
+	
+	SaveGame(TArray<FPlayerPackage> {newPlayer}, 22119);
+	
 	FGameSave readGame = ReadGame(22119);
-	GEngine->AddOnScreenDebugMessage(1, 10, FColor::White, FString::Printf(TEXT("%i"), readGame.WorldState.SaveID));
+
+	PlayerStats->ShowStats(readGame.PlayerPackages[0]);
 }
 
 // Called every frame

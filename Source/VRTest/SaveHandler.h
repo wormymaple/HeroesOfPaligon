@@ -4,8 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "SaveHandler.generated.h"
 
+
+class APlayerStats;
 
 USTRUCT()
 struct FPlayerInfo
@@ -29,6 +32,11 @@ public:
 	int Race;
 	UPROPERTY()
 	int Color;
+
+	UPROPERTY()
+	int Mana;
+	UPROPERTY()
+	int Health;
 	
 	UPROPERTY()
 	int Wit;
@@ -93,6 +101,9 @@ protected:
 	FString SaveDir;
 
 	void CreateDir(FString Dir, IPlatformFile& platformFile);
+
+	UPROPERTY(EditAnywhere)
+	APlayerStats* PlayerStats;
 
 public:	
 	// Called every frame
