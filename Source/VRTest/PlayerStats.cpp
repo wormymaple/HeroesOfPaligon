@@ -37,5 +37,14 @@ void APlayerStats::ShowStats(FPlayerPackage playerPackage)
 	FString statsString = "Health: " + StringHelper::IntToString(currentChar.Health) + "\nMana: " + StringHelper::IntToString(currentChar.Mana);
 	
 	StatsText->SetText(FText::FromString(statsString));
+
+	TArray<int> coreStats = {
+		currentChar.Vitality,
+		currentChar.Might,
+		currentChar.Soul,
+		currentChar.Wit,
+		currentChar.Haste
+	};
+	StatDisc->DrawShape(coreStats);
 }
 

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "SaveHandler.h"
 #include "Components/TextRenderComponent.h"
+#include "StatDisc.h"
 
 #include "GameFramework/Actor.h"
 #include "PlayerStats.generated.h"
@@ -24,6 +25,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UTextRenderComponent* StatsText;
+	
+	UPROPERTY(EditAnywhere)
+	AStatDisc* StatDisc;
 
 public:	
 	// Called every frame

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "StatDisc.h"
 #include "GameFramework/Actor.h"
 
 #include "SaveHandler.generated.h"
@@ -104,6 +105,7 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	APlayerStats* PlayerStats;
+
 
 public:	
 	// Called every frame

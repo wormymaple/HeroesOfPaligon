@@ -19,8 +19,17 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UPROPERTY(EditAnywhere)
+	UBlueprint* LineSpline;
+
+	UPROPERTY(EditAnywhere)
+	float DiscRadius;
+
+	UPROPERTY(EditAnywhere)
+	float MinRadius;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+	void DrawShape(TArray<int> stats);
 };
