@@ -3,8 +3,7 @@
 #include "Math/UnrealMathUtility.h"
 #include "StatDisc.h"
 #include "ProceduralMeshComponent.h"
-
-
+#include "StaticMeshAttributes.h"
 
 
 // Sets default values
@@ -47,10 +46,21 @@ void AStatDisc::DrawShape(TArray<int> stats)
 		polygonPoints.Insert(FVector(0, rotPos.X, rotPos.Y), 1);
 	}
 
+	TArray<int> triangles;
+	TArray<FVector> normals;
+	
 	for (int i = 0; i < polygonPoints.Num(); i += 1)
 	{
 		int secondVert = i < polygonPoints.Num() - 1 ? i + 2 : 1;
-		newMesh->CreateMeshSection(i, polygonPoints, {0, i + 1, secondVert}, TArray<FVector>(), TArray<FVector2D>(), TArray<FColor>(), TArray<FProcMeshTangent>(), false);
+
+		triangles.Add(0);
+		triangles.Add(i + 1);
+		triangles.Add(secondVert);
+
+		normals.Add(Normal);
 	}
+
+	newMesh->CreateMeshSection(0, polygonPoints, triangles, normals, {}, {}, {}, false);
+	newMesh->SetMaterial(0, DiscMat);
 }
 

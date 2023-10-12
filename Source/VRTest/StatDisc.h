@@ -28,6 +28,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float MinRadius;
 
+	UPROPERTY(EditAnywhere)
+	UMaterial* DiscMat;
+
+	UPROPERTY(EditAnywhere)
+	FVector Normal;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
