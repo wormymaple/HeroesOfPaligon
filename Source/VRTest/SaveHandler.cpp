@@ -34,11 +34,11 @@ void ASaveHandler::BeginPlay()
 	newChar.Mana = 15;
 	newChar.Health = 15;
 
-	newChar.Wit = 15;
-	newChar.Might = 15;
-	newChar.Soul = 15;
+	newChar.Wit = 12;
+	newChar.Might = 14;
+	newChar.Soul = 7;
 	newChar.Haste = 10;
-	newChar.Vitality = 15;
+	newChar.Vitality = 5;
 	
 	FPlayerPackage newPlayer;
 	newPlayer.CharSaves = TArray<FSaveState> {newChar};
