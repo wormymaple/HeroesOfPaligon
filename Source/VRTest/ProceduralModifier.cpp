@@ -19,3 +19,11 @@ void IProceduralModifier::SetHexMobility(EComponentMobility::Type MobilityType)
 	}
 }
 
+ALootPlacer* IProceduralModifier::GetLoot(UObject* World)
+{
+	TArray<AActor*> LootPlacers;
+	UGameplayStatics::GetAllActorsOfClass(World, ALootPlacer::StaticClass(), LootPlacers);
+
+	return nullptr;
+}
+

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "HexComponent.h"
+#include "LootPlacer.h"
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "GameBoardManager.generated.h"
@@ -34,6 +35,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	AStaticMeshActor* GhostPawn;
+
+	UPROPERTY(EditAnywhere)
+	ALootPlacer* LootPlacer;
 
 private:
 	UPROPERTY()

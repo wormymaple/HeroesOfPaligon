@@ -4,54 +4,54 @@
 
 #include "CoreMinimal.h"
 #include "HexComponent.h"
-#include "ProceduralModifier.h"
 #include "GameFramework/Actor.h"
-#include "PlainsModifier.generated.h"
+#include "LootPlacer.generated.h"
 
 UCLASS()
-class VRTEST_API APlainsModifier : public AActor, public IProceduralModifier
+class VRTEST_API ALootPlacer : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlainsModifier();
+	ALootPlacer();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	UBlueprint* GoldPiece;
 	
 	UPROPERTY(EditAnywhere)
-	FVector2D NoisePos;
-	
+	FVector GoldOffset;
+
 	UPROPERTY(EditAnywhere)
-	float StartHeight;
+	TArray<HexType> LootHexes;
+
 	UPROPERTY(EditAnywhere)
-	float OffsetHeight;
-	
+	float GoldChance;
+
 	UPROPERTY(EditAnywhere)
-	float NoiseOffset;
+	UBlueprint* Enemy;
+
+	UPROPERTY(EditAnywhere)
+	FVector EnemyOffset;
+
 	UPROPERTY(EditAnywhere)
 	float NoiseScale;
 
 	UPROPERTY(EditAnywhere)
-	float HighPassCutoff;
-	UPROPERTY(EditAnywhere)
-	float LowPassCutoff;
-	
-	UPROPERTY(EditAnywhere)
-	float SecondNoiseScale;
-	
-	UPROPERTY(EditAnywhere)
-	TArray<UMaterial*> TypeMaterials;
+	FVector2D NoiseOffset;
 
 	UPROPERTY(EditAnywhere)
-	ALootPlacer* LootPlacer;
+	float NoiseHighCutoff;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void ModifyHexes() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
-
+	void PlaceLoot();
+	void PlaceEnemies();
+	TArray<AActor*> GetHexes();
 };

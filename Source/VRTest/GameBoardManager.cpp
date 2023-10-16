@@ -23,6 +23,7 @@ void AGameBoardManager::BeginPlay()
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Hex"), Hexes);
 
 	SpawnPawn();
+	//LootPlacer->PlaceLoot();
 }
 
 // Called every frame
