@@ -39,13 +39,13 @@ protected:
 	FVector EnemyOffset;
 
 	UPROPERTY(EditAnywhere)
-	float NoiseScale;
+	float CircleRadius;
 
 	UPROPERTY(EditAnywhere)
-	FVector2D NoiseOffset;
+	int BlobCount;
 
 	UPROPERTY(EditAnywhere)
-	float NoiseHighCutoff;
+	int EnemySpawnCount;
 
 public:	
 	// Called every frame
@@ -53,5 +53,8 @@ public:
 	virtual void OnConstruction(const FTransform& Transform) override;
 	void PlaceLoot();
 	void PlaceEnemies();
+
+	void SpawnEnemy(FVector Pos);
+	
 	TArray<AActor*> GetHexes();
 };

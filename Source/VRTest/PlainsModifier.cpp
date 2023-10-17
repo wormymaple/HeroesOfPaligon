@@ -44,11 +44,11 @@ void APlainsModifier::ModifyHexes()
 		FVector hexPos = hex->GetActorLocation();
 		FVector2D GenNoisePos = FVector2D(hexPos.X, hexPos.Y) + NoisePos;
 		
-		float noise1 =  FMath::Clamp(static_cast<double>(FMath::PerlinNoise2D(GenNoisePos * NoiseScale)) + NoiseOffset, 0.0, 1.0 + NoiseOffset); 
+		float noise1 =  FMath::Clamp(static_cast<double>(FMath::PerlinNoise2D(GenNoisePos * NoiseScale * ScaleMultiplier)) + NoiseOffset, 0.0, 1.0 + NoiseOffset); 
 		float height = noise1 * OffsetHeight;
 		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height));
 
-		float noise2 = FMath::PerlinNoise2D(GenNoisePos * SecondNoiseScale);
+		float noise2 = FMath::PerlinNoise2D(GenNoisePos * SecondNoiseScale * ScaleMultiplier);
 
 		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
 

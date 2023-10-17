@@ -41,6 +41,9 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float SecondNoiseScale;
+
+	UPROPERTY(EditAnywhere)
+	float ScaleMultiplier = 1;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<UMaterial*> TypeMaterials;

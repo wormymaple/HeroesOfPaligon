@@ -3,6 +3,7 @@
 
 #include "LootPlacer.h"
 
+#include "StringHelper.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -61,18 +62,37 @@ void ALootPlacer::PlaceEnemies()
 	for (AActor* enemy : Enemies) GetWorld()->DestroyActor(enemy);
 
 	TArray<AActor*> Hexes = GetHexes(); // Get hexes in world
-	for (AActor* hex : Hexes)
+	TArray<AActor*> UsedHexes;
+
+	float rot = 360.0 / BlobCount;
+	for (int i = 0; i < BlobCount; i += 1)
 	{
-		FVector hexWorldPos = hex->GetActorLocation();
-		FVector2D hexPos = FVector2D(hexWorldPos);
+		FVector2D blobPos = CircleRadius * FVector2D(1, 0).GetRotated(rot * i);
 
-		float noise = FMath::PerlinNoise2D((hexPos + NoiseOffset) * NoiseScale);
+		AActor* closestHex = Hexes[0];
+		float closestDist = 9999999999;
+		for (AActor* hex : Hexes)
+		{
+			FVector hexPos = hex->GetActorLocation();
+			FVector2D hexPos2D = FVector2D(hexPos.X, hexPos.Y);
+			float dist = FVector2D::Distance(hexPos2D, blobPos);
 
-		if (noise < NoiseHighCutoff) continue;
-		
-		AActor* newEnemy = GetWorld()->SpawnActor(Enemy->GeneratedClass);
-		newEnemy->SetActorLocation(hex->GetActorLocation() + EnemyOffset);
-		newEnemy->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+			if (dist >= closestDist || hex->GetComponentByClass<UHexComponent>()->Type == HexType::Water) continue;
+			
+			closestDist = dist;
+			closestHex = hex;
+		}
+
+		SpawnEnemy(closestHex->GetActorLocation() + EnemyOffset);
+
+		UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
+		hexComp->GetAdjacentHexes(10, Hexes);
+		int hexCount = hexComp->AdjacentHexes.Num();
+		int spawnCount = EnemySpawnCount > hexCount ? hexCount : EnemySpawnCount;
+		for (int j = 0; j < spawnCount; j += 1)
+		{
+			SpawnEnemy(hexComp->AdjacentHexes[j]->GetOwner()->GetActorLocation() + EnemyOffset);
+		}
 	}
 }
 
@@ -81,5 +101,12 @@ TArray<AActor*> ALootPlacer::GetHexes()
 	TArray<AActor*> Hexes;
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
 	return Hexes;
+}
+
+void ALootPlacer::SpawnEnemy(FVector Pos)
+{
+	AActor* newEnemy = GetWorld()->SpawnActor(Enemy->GeneratedClass);
+	newEnemy->SetActorLocation(Pos);
+	newEnemy->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 }
 
