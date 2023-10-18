@@ -5,6 +5,7 @@
 
 #include "HexComponent.h"
 #include "PawnPiece.h"
+#include "SaveHandler.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -22,9 +23,35 @@ void AGameBoardManager::BeginPlay()
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Hex"), Hexes);
 
-	SpawnPawn();
+	BoardSetup();
 	//LootPlacer->PlaceLoot();
 }
+
+void AGameBoardManager::BoardSetup()
+{
+	FGameSave loadedData = SaveHandler->ReadGame(22119);
+	
+	AActor* closestHex = Hexes[0];
+	float closestDist = 9999999999;
+	for (AActor* hex : Hexes)
+	{
+		FVector hexPos = hex->GetActorLocation();
+		FVector2D hexPos2D = FVector2D(hexPos.X, hexPos.Y);
+		float dist = FVector2D::Distance(hexPos2D, FVector2D::Zero());
+
+		if (dist >= closestDist || hex->GetComponentByClass<UHexComponent>()->Type == HexType::Water) continue;
+			
+		closestDist = dist;
+		closestHex = hex;
+	}
+
+	UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
+	for (int i = 0; i < loadedData.PlayerPackages.Num(); i += 1)
+	{
+		SpawnPawn(hexComp->AdjacentHexes[i]->GetOwner());
+	}
+}
+
 
 // Called every frame
 void AGameBoardManager::Tick(float DeltaTime)
@@ -37,24 +64,13 @@ void AGameBoardManager::Tick(float DeltaTime)
 	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
 }
 
-void AGameBoardManager::SpawnPawn()
+void AGameBoardManager::SpawnPawn(AActor* Hex)
 {
 	AActor* newPawn = GetWorld()->SpawnActor(PawnBlueprint->GeneratedClass);
 	newPawn->GetComponentByClass<UPawnPiece>()->BoardManager = this;
 
-	TArray<AActor*> possibleSpawns;
-	
-	for (AActor* hex : Hexes)
-	{
-		if (hex->GetComponentByClass<UHexComponent>()->Type != HexType::Water)
-		{
-			possibleSpawns.Add(hex);
-		}	
-	}
-
-	AActor* hex = possibleSpawns[FMath::RandRange(0, possibleSpawns.Num() - 1)];
-	newPawn->SetActorLocation(hex->GetActorLocation() + PawnOffset);
-	newPawn->GetComponentByClass<UPawnPiece>()->SetCurrentHex(hex->GetComponentByClass<UHexComponent>());
+	newPawn->SetActorLocation(Hex->GetActorLocation() + PawnOffset);
+	newPawn->GetComponentByClass<UPawnPiece>()->SetCurrentHex(Hex->GetComponentByClass<UHexComponent>());
 
 	SpawnedPawns.Add(newPawn->GetComponentByClass<UPawnPiece>());
 }
@@ -102,6 +118,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 
 AActor* AGameBoardManager::GetMeeple(int index)
 {
+	if (index > SpawnedPawns.Num()) return nullptr;
 	return SpawnedPawns[index]->GetOwner();
 }
 

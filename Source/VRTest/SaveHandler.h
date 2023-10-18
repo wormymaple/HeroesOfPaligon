@@ -114,4 +114,6 @@ public:
 	void SaveGame(TArray<FPlayerPackage> Players, int SaveID = 0);
 	FGameSave ReadGame(int SaveID);
 
+	UPROPERTY(EditAnywhere)
+	bool IsInCampfire;
 };

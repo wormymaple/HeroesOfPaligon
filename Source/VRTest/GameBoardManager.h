@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "HexComponent.h"
 #include "LootPlacer.h"
+#include "SaveHandler.h"
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "GameBoardManager.generated.h"
@@ -39,6 +40,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	ALootPlacer* LootPlacer;
 
+	UPROPERTY(EditAnywhere)
+	ASaveHandler* SaveHandler;
+
 private:
 	UPROPERTY()
 	TArray<AActor*> SpawnedHighlights;
@@ -61,7 +65,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	AActor* GetMeeple(int index);
 
-	void SpawnPawn();
+	void BoardSetup();
+	void SpawnPawn(AActor* Hex);
 	
 	UPROPERTY()
 	TArray<AActor*> Hexes;
