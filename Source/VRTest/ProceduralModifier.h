@@ -27,6 +27,7 @@ public:
 	void GetHexes(UObject* World);
 	void SetHexMobility(EComponentMobility::Type MobilityType);
 	ALootPlacer* GetLoot(UObject* World);
+	void DestroyDetails(UObject* World);
 
 	TArray<AActor*> Hexes;
 };

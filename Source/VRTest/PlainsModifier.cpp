@@ -36,6 +36,8 @@ void APlainsModifier::Tick(float DeltaTime)
 
 void APlainsModifier::ModifyHexes()
 {
+	DestroyDetails(GetWorld());
+	
 	for (AActor* hex : Hexes)
 	{
 		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
@@ -71,6 +73,16 @@ void APlainsModifier::ModifyHexes()
 				TileMat = TypeMaterials[matIndex + 1];
 
 				hexComp->Type = HexType::Ground;
+
+				float treeChance = FMath::RandRange(0.0, 1.0);
+				if (treeChance < PineTreeChance && PineTree != nullptr)
+				{
+					AActor* newPine = GetWorld()->SpawnActor(PineTree->GeneratedClass);
+					newPine->SetActorLocation(hexPos + DetailOffset);
+					newPine->SetActorRotation(FRotator(0, FMath::RandRange(0, 360), 0));
+					
+					newPine->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+				}
 			}
 			hexMesh->SetVisibility(noise1 > LowPassCutoff);
 			

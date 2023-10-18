@@ -50,10 +50,13 @@ private:
 	UPROPERTY()
 	UPawnPiece* InteractingPawn;
 
-	UHexComponent* GetClosestHex();
+	AActor* GetClosestHex();
 
 	UPROPERTY()
 	TArray<UPawnPiece*> SpawnedPawns;
+
+	UPROPERTY()
+	TArray<AActor*> AccessingHexes;
 	
 public:	
 	// Called every frame
@@ -66,7 +69,7 @@ public:
 	AActor* GetMeeple(int index);
 
 	void BoardSetup();
-	void SpawnPawn(AActor* Hex);
+	void SpawnPawn(AActor* Hex, FSaveState Character);
 	
 	UPROPERTY()
 	TArray<AActor*> Hexes;

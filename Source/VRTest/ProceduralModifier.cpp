@@ -27,3 +27,11 @@ ALootPlacer* IProceduralModifier::GetLoot(UObject* World)
 	return nullptr;
 }
 
+void IProceduralModifier::DestroyDetails(UObject* World)
+{
+	TArray<AActor*> details;
+	UGameplayStatics::GetAllActorsWithTag(World, FName("detail"), details);
+
+	for (AActor* detail : details) World->GetWorld()->DestroyActor(detail);
+}
+

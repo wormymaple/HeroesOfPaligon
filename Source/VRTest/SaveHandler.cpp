@@ -46,7 +46,7 @@ void ASaveHandler::BeginPlay()
 	newPlayer.PlayerInfo.UniqueID = 0;
 	newPlayer.PlayerInfo.UsedCharacter = 0;
 	
-	SaveGame(TArray<FPlayerPackage> {newPlayer}, 22119);
+	//SaveGame(TArray<FPlayerPackage> {newPlayer}, 22119);
 
 	if (IsInCampfire)
 	{

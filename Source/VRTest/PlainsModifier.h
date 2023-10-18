@@ -51,6 +51,15 @@ protected:
 	UPROPERTY(EditAnywhere)
 	ALootPlacer* LootPlacer;
 
+	UPROPERTY(EditAnywhere)
+	UBlueprint* PineTree;
+
+	UPROPERTY(EditAnywhere)
+	float PineTreeChance;
+
+	UPROPERTY(EditAnywhere)
+	FVector DetailOffset;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
