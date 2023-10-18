@@ -140,7 +140,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 	AActor* closestHex = GetClosestHex();
 	
 	UStaticMeshComponent* pawnMesh = InPawn->GetComponentByClass<UStaticMeshComponent>(); 
-	pawnMesh->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
+	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 	pawnComponent->SetCurrentHex(closestHex->GetComponentByClass<UHexComponent>());
 }
