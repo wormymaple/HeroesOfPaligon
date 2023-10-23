@@ -129,17 +129,24 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 
 void AGameBoardManager::PlacePawn(AActor* InPawn)
 {
+	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
+	UStaticMeshComponent* pawnMesh = InPawn->GetComponentByClass<UStaticMeshComponent>(); 
+
+	if (FinishedMove)
+	{
+		pawnMesh->SetWorldLocation(pawnComponent->GetCurrentHex()->GetOwner()->GetActorLocation() + PawnOffset);
+		pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
+		return;
+	}
+	
 	Interacting = false;
 	GhostPawn->GetStaticMeshComponent()->SetVisibility(false);
-	
-	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
 	
 	for (AActor* highlight : SpawnedHighlights) GetWorld()->DestroyActor(highlight);
 	SpawnedHighlights.Empty();
 
 	AActor* closestHex = GetClosestHex();
 	
-	UStaticMeshComponent* pawnMesh = InPawn->GetComponentByClass<UStaticMeshComponent>(); 
 	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 	pawnComponent->SetCurrentHex(closestHex->GetComponentByClass<UHexComponent>());
