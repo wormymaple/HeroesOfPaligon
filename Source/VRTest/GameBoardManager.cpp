@@ -156,7 +156,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 
 AActor* AGameBoardManager::GetMeeple(int index)
 {
-	if (index > SpawnedPawns.Num()) return nullptr;
+	if (index > SpawnedPawns.Num() - 1) return nullptr;
 	return SpawnedPawns[index]->GetOwner();
 }
 
