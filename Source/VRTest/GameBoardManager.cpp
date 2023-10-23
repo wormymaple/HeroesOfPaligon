@@ -5,6 +5,7 @@
 
 #include "HexComponent.h"
 #include "PawnPiece.h"
+#include "SaveHandler.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -22,8 +23,37 @@ void AGameBoardManager::BeginPlay()
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Hex"), Hexes);
 
-	SpawnPawn();
+	BoardSetup();
+	//LootPlacer->PlaceLoot();
 }
+
+void AGameBoardManager::BoardSetup()
+{
+	FGameSave loadedData = SaveHandler->ReadGame(22119);
+	
+	AActor* closestHex = Hexes[0];
+	float closestDist = 9999999999;
+	for (AActor* hex : Hexes)
+	{
+		FVector hexPos = hex->GetActorLocation();
+		FVector2D hexPos2D = FVector2D(hexPos.X, hexPos.Y);
+		float dist = FVector2D::Distance(hexPos2D, FVector2D::Zero());
+
+		if (dist >= closestDist || hex->GetComponentByClass<UHexComponent>()->Type == HexType::Water) continue;
+			
+		closestDist = dist;
+		closestHex = hex;
+	}
+
+	UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
+	for (int i = 0; i < loadedData.PlayerPackages.Num(); i += 1)
+	{
+		FPlayerPackage player = loadedData.PlayerPackages[i];
+		FSaveState character = player.CharSaves[player.PlayerInfo.UsedCharacter];
+		SpawnPawn(hexComp->AdjacentHexes[i]->GetOwner(), character);
+	}
+}
+
 
 // Called every frame
 void AGameBoardManager::Tick(float DeltaTime)
@@ -32,35 +62,26 @@ void AGameBoardManager::Tick(float DeltaTime)
 
 	if (!Interacting) return;
 
-	UHexComponent* closestHex = GetClosestHex();
-	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
+	AActor* closestHex = GetClosestHex();
+	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 }
 
-void AGameBoardManager::SpawnPawn()
+void AGameBoardManager::SpawnPawn(AActor* Hex, FSaveState Character)
 {
 	AActor* newPawn = GetWorld()->SpawnActor(PawnBlueprint->GeneratedClass);
-	newPawn->GetComponentByClass<UPawnPiece>()->BoardManager = this;
+	UPawnPiece* newPawnComp = newPawn->GetComponentByClass<UPawnPiece>(); 
+	newPawnComp->BoardManager = this;
 
-	TArray<AActor*> possibleSpawns;
+	newPawn->SetActorLocation(Hex->GetActorLocation() + PawnOffset);
+	newPawnComp->SetCurrentHex(Hex->GetComponentByClass<UHexComponent>());
+	newPawnComp->CurrentCharacter = Character;
 	
-	for (AActor* hex : Hexes)
-	{
-		if (hex->GetComponentByClass<UHexComponent>()->Type != HexType::Water)
-		{
-			possibleSpawns.Add(hex);
-		}	
-	}
-
-	AActor* hex = possibleSpawns[FMath::RandRange(0, possibleSpawns.Num() - 1)];
-	newPawn->SetActorLocation(hex->GetActorLocation() + PawnOffset);
-	newPawn->GetComponentByClass<UPawnPiece>()->SetCurrentHex(hex->GetComponentByClass<UHexComponent>());
-
 	SpawnedPawns.Add(newPawn->GetComponentByClass<UPawnPiece>());
 }
 
 void AGameBoardManager::PickUpPawn(AActor* InPawn)
 {
-	if (Interacting) return;
+	if (Interacting || FinishedMove) return;
 	Interacting = true;
 	GhostPawn->GetStaticMeshComponent()->SetVisibility(true);
 	
@@ -70,54 +91,93 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 	SpawnedHighlights.Empty();
 	UHexComponent* pawnHex = pawnComponent->GetCurrentHex();
 
-	for (UHexComponent* adjacentHex : pawnHex->AdjacentHexes)
+	int haste = (pawnComponent->CurrentCharacter.Haste / 5) + 1;
+	TArray<AActor*> accessibleHexes;
+	TArray<UHexComponent*> nextHexes = {pawnHex};
+	TArray<UHexComponent*> usedHexes = {pawnHex};
+	while (haste > 0)
 	{
-		FVector hexPos = adjacentHex->GetOwner()->GetActorLocation();
+		TArray<UHexComponent*> newHexes;
+		for (UHexComponent* hex : nextHexes)
+		{
+			for (UHexComponent* adjHex : hex->AdjacentHexes)
+			{
+				if (usedHexes.Contains(adjHex)) continue;
+				
+				newHexes.Add(adjHex);
+				accessibleHexes.Add(adjHex->GetOwner());
+				usedHexes.Add(adjHex);
+			}
+		}
+		nextHexes = newHexes;
+
+		haste -= 1;
+	}
+	
+	for (AActor* accessibleHex : accessibleHexes)
+	{
+		FVector hexPos = accessibleHex->GetActorLocation();
 
 		AActor* newHighlight = GetWorld()->SpawnActor(HighlightMesh->GeneratedClass);
 		newHighlight->SetActorLocation(hexPos + PawnOffset);
 
 		SpawnedHighlights.Add(newHighlight);
 	}
+
+	AccessingHexes = accessibleHexes;
 }
 
 void AGameBoardManager::PlacePawn(AActor* InPawn)
 {
+	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
+	UStaticMeshComponent* pawnMesh = InPawn->GetComponentByClass<UStaticMeshComponent>(); 
+
+	if (FinishedMove)
+	{
+		pawnMesh->SetWorldLocation(pawnComponent->GetCurrentHex()->GetOwner()->GetActorLocation() + PawnOffset);
+		pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
+		return;
+	}
+	
 	Interacting = false;
 	GhostPawn->GetStaticMeshComponent()->SetVisibility(false);
-	
-	UPawnPiece* pawnComponent = InPawn->GetComponentByClass<UPawnPiece>();
 	
 	for (AActor* highlight : SpawnedHighlights) GetWorld()->DestroyActor(highlight);
 	SpawnedHighlights.Empty();
 
-	UHexComponent* closestHex = GetClosestHex();
+	AActor* closestHex = GetClosestHex();
 	
-	UStaticMeshComponent* pawnMesh = InPawn->GetComponentByClass<UStaticMeshComponent>(); 
-	pawnMesh->SetWorldLocation(closestHex->GetOwner()->GetActorLocation() + PawnOffset);
+	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
-	pawnComponent->SetCurrentHex(closestHex);
+	pawnComponent->SetCurrentHex(closestHex->GetComponentByClass<UHexComponent>());
+
+	FinishedMove = true;
 }
 
 AActor* AGameBoardManager::GetMeeple(int index)
 {
+	if (index > SpawnedPawns.Num()) return nullptr;
 	return SpawnedPawns[index]->GetOwner();
 }
 
-UHexComponent* AGameBoardManager::GetClosestHex()
+void AGameBoardManager::EndMove()
+{
+	FinishedMove = false;
+}
+
+AActor* AGameBoardManager::GetClosestHex()
 {
 	UStaticMeshComponent* pawnMesh = InteractingPawn->GetOwner()->GetComponentByClass<UStaticMeshComponent>(); 
 	FVector pawnPos = pawnMesh->GetComponentLocation();
 
 	float closestDist = 9999999999;
-	UHexComponent* pawnHex = InteractingPawn->GetCurrentHex();
-	UHexComponent* closestHex = pawnHex->AdjacentHexes[0];
-	for (UHexComponent* adjacentHex : pawnHex->AdjacentHexes)
+	AActor* closestHex = AccessingHexes[0];
+	for (AActor* accessingHex : AccessingHexes)
 	{
-		float dist = FVector::Dist(adjacentHex->GetOwner()->GetActorLocation(), pawnPos);
+		float dist = FVector::Dist(accessingHex->GetActorLocation(), pawnPos);
 		if (dist < closestDist)
 		{
-			closestHex = adjacentHex;
+			closestHex = accessingHex;
 			closestDist = dist;
 		}
 	}

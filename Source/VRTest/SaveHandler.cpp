@@ -46,11 +46,14 @@ void ASaveHandler::BeginPlay()
 	newPlayer.PlayerInfo.UniqueID = 0;
 	newPlayer.PlayerInfo.UsedCharacter = 0;
 	
-	SaveGame(TArray<FPlayerPackage> {newPlayer}, 22119);
-	
-	FGameSave readGame = ReadGame(22119);
+	//SaveGame(TArray<FPlayerPackage> {newPlayer}, 22119);
 
-	PlayerStats->ShowStats(readGame.PlayerPackages[0]);
+	if (IsInCampfire)
+	{
+		FGameSave readGame = ReadGame(22119);
+
+		PlayerStats->ShowStats(readGame.PlayerPackages[0]);
+	}
 }
 
 // Called every frame

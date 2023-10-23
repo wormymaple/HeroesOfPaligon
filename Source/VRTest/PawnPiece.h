@@ -30,4 +30,6 @@ public:
 
 	UHexComponent* GetCurrentHex();
 	void SetCurrentHex(UHexComponent* InHex);
+
+	FSaveState CurrentCharacter;
 };

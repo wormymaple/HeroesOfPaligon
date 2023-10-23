@@ -4,66 +4,57 @@
 
 #include "CoreMinimal.h"
 #include "HexComponent.h"
-#include "ProceduralModifier.h"
 #include "GameFramework/Actor.h"
-#include "PlainsModifier.generated.h"
+#include "LootPlacer.generated.h"
 
 UCLASS()
-class VRTEST_API APlainsModifier : public AActor, public IProceduralModifier
+class VRTEST_API ALootPlacer : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	APlainsModifier();
+	ALootPlacer();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere)
+	UBlueprint* GoldPiece;
 	
 	UPROPERTY(EditAnywhere)
-	FVector2D NoisePos;
-	
-	UPROPERTY(EditAnywhere)
-	float StartHeight;
-	UPROPERTY(EditAnywhere)
-	float OffsetHeight;
-	
-	UPROPERTY(EditAnywhere)
-	float NoiseOffset;
-	UPROPERTY(EditAnywhere)
-	float NoiseScale;
+	FVector GoldOffset;
 
 	UPROPERTY(EditAnywhere)
-	float HighPassCutoff;
-	UPROPERTY(EditAnywhere)
-	float LowPassCutoff;
-	
-	UPROPERTY(EditAnywhere)
-	float SecondNoiseScale;
+	TArray<HexType> LootHexes;
 
 	UPROPERTY(EditAnywhere)
-	float ScaleMultiplier = 1;
-	
-	UPROPERTY(EditAnywhere)
-	TArray<UMaterial*> TypeMaterials;
+	float GoldChance;
 
 	UPROPERTY(EditAnywhere)
-	ALootPlacer* LootPlacer;
+	UBlueprint* Enemy;
 
 	UPROPERTY(EditAnywhere)
-	UBlueprint* PineTree;
+	FVector EnemyOffset;
 
 	UPROPERTY(EditAnywhere)
-	float PineTreeChance;
+	float CircleRadius;
 
 	UPROPERTY(EditAnywhere)
-	FVector DetailOffset;
+	int BlobCount;
+
+	UPROPERTY(EditAnywhere)
+	int EnemySpawnCount;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	virtual void ModifyHexes() override;
 	virtual void OnConstruction(const FTransform& Transform) override;
+	void PlaceLoot();
+	void PlaceEnemies();
 
+	void SpawnEnemy(FVector Pos);
+	
+	TArray<AActor*> GetHexes();
 };

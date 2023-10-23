@@ -36,6 +36,8 @@ void APlainsModifier::Tick(float DeltaTime)
 
 void APlainsModifier::ModifyHexes()
 {
+	DestroyDetails(GetWorld());
+	
 	for (AActor* hex : Hexes)
 	{
 		UStaticMeshComponent* hexMesh = hex->GetComponentByClass<UStaticMeshComponent>();
@@ -44,11 +46,13 @@ void APlainsModifier::ModifyHexes()
 		FVector hexPos = hex->GetActorLocation();
 		FVector2D GenNoisePos = FVector2D(hexPos.X, hexPos.Y) + NoisePos;
 		
-		float noise1 =  FMath::Clamp(FMath::PerlinNoise2D(GenNoisePos * NoiseScale) + NoiseOffset, 0, 1 + NoiseOffset); 
+		float noise1 =  FMath::Clamp(static_cast<double>(FMath::PerlinNoise2D(GenNoisePos * NoiseScale * ScaleMultiplier)) + NoiseOffset, 0.0, 1.0 + NoiseOffset); 
 		float height = noise1 * OffsetHeight;
 		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height));
 
-		float noise2 = FMath::PerlinNoise2D(GenNoisePos * SecondNoiseScale);
+		float noise2 = FMath::PerlinNoise2D(GenNoisePos * SecondNoiseScale * ScaleMultiplier);
+
+		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
 
 		if (TypeMaterials.Num() != 0)
 		{
@@ -56,26 +60,42 @@ void APlainsModifier::ModifyHexes()
 			if (noise1 <= LowPassCutoff)
 			{
 				TileMat = TypeMaterials[0];
+				hexComp->Type = HexType::Water;
 			}
 			else if (noise1 >= HighPassCutoff)
 			{
 				TileMat = TypeMaterials[TypeMaterials.Num() - 1];
+				hexComp->Type = HexType::Rock;
 			}
 			else
 			{
 				int matIndex = ((noise2 + 1) / 2) * (TypeMaterials.Num() - 2);
 				TileMat = TypeMaterials[matIndex + 1];
+
+				hexComp->Type = HexType::Ground;
+
+				float treeChance = FMath::RandRange(0.0, 1.0);
+				if (treeChance < PineTreeChance && PineTree != nullptr)
+				{
+					AActor* newPine = GetWorld()->SpawnActor(PineTree->GeneratedClass);
+					newPine->SetActorLocation(hexPos + DetailOffset);
+					newPine->SetActorRotation(FRotator(0, FMath::RandRange(0, 360), 0));
+					
+					newPine->AttachToActor(hex, FAttachmentTransformRules::KeepWorldTransform);
+				}
 			}
 			hexMesh->SetVisibility(noise1 > LowPassCutoff);
 			
 			if (TileMat != nullptr)
 			{
-				hexMesh->SetMaterial(0, TileMat);
+				hexMesh->SetMaterial(0, TileMat); 
 			}
 		}
 
 		hexMesh->SetMobility(EComponentMobility::Static);
 	}
+
+	if (LootPlacer != nullptr) LootPlacer->PlaceEnemies();
 }
 
 

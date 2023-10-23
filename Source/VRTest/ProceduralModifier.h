@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LootPlacer.h"
 #include "UObject/Interface.h"
 #include "ProceduralModifier.generated.h"
 
@@ -25,7 +26,8 @@ public:
 	virtual void ModifyHexes() = 0;
 	void GetHexes(UObject* World);
 	void SetHexMobility(EComponentMobility::Type MobilityType);
+	ALootPlacer* GetLoot(UObject* World);
+	void DestroyDetails(UObject* World);
 
-	
 	TArray<AActor*> Hexes;
 };

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "HexComponent.h"
+#include "LootPlacer.h"
+#include "SaveHandler.h"
 #include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "GameBoardManager.generated.h"
@@ -35,6 +37,12 @@ protected:
 	UPROPERTY(EditAnywhere)
 	AStaticMeshActor* GhostPawn;
 
+	UPROPERTY(EditAnywhere)
+	ALootPlacer* LootPlacer;
+
+	UPROPERTY(EditAnywhere)
+	ASaveHandler* SaveHandler;
+
 private:
 	UPROPERTY()
 	TArray<AActor*> SpawnedHighlights;
@@ -42,10 +50,13 @@ private:
 	UPROPERTY()
 	UPawnPiece* InteractingPawn;
 
-	UHexComponent* GetClosestHex();
+	AActor* GetClosestHex();
 
 	UPROPERTY()
 	TArray<UPawnPiece*> SpawnedPawns;
+
+	UPROPERTY()
+	TArray<AActor*> AccessingHexes;
 	
 public:	
 	// Called every frame
@@ -56,9 +67,14 @@ public:
 	void PlacePawn(AActor* InPawn);
 	UFUNCTION(BlueprintCallable)
 	AActor* GetMeeple(int index);
+	UFUNCTION(BlueprintCallable)
+	void EndMove();
 
-	void SpawnPawn();
+	void BoardSetup();
+	void SpawnPawn(AActor* Hex, FSaveState Character);
 	
 	UPROPERTY()
 	TArray<AActor*> Hexes;
+
+	bool FinishedMove;
 };

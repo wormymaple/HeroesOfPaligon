@@ -38,4 +38,8 @@ public:
 	HexType Type = HexType::None;
 	
 	TArray<UHexComponent*> AdjacentHexes;
+
+	void AddLoot(AActor* Loot);
+	UPROPERTY()
+	TArray<AActor*> LootActors;
 };
