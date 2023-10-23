@@ -81,7 +81,7 @@ void APlainsModifier::ModifyHexes()
 					newPine->SetActorLocation(hexPos + DetailOffset);
 					newPine->SetActorRotation(FRotator(0, FMath::RandRange(0, 360), 0));
 					
-					newPine->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+					newPine->AttachToActor(hex, FAttachmentTransformRules::KeepWorldTransform);
 				}
 			}
 			hexMesh->SetVisibility(noise1 > LowPassCutoff);

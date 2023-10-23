@@ -81,7 +81,7 @@ void AGameBoardManager::SpawnPawn(AActor* Hex, FSaveState Character)
 
 void AGameBoardManager::PickUpPawn(AActor* InPawn)
 {
-	if (Interacting) return;
+	if (Interacting || FinishedMove) return;
 	Interacting = true;
 	GhostPawn->GetStaticMeshComponent()->SetVisibility(true);
 	
@@ -94,7 +94,7 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 	int haste = (pawnComponent->CurrentCharacter.Haste / 5) + 1;
 	TArray<AActor*> accessibleHexes;
 	TArray<UHexComponent*> nextHexes = {pawnHex};
-	TArray<UHexComponent*> usedHexes;
+	TArray<UHexComponent*> usedHexes = {pawnHex};
 	while (haste > 0)
 	{
 		TArray<UHexComponent*> newHexes;
@@ -143,12 +143,19 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 	pawnComponent->SetCurrentHex(closestHex->GetComponentByClass<UHexComponent>());
+
+	FinishedMove = true;
 }
 
 AActor* AGameBoardManager::GetMeeple(int index)
 {
 	if (index > SpawnedPawns.Num()) return nullptr;
 	return SpawnedPawns[index]->GetOwner();
+}
+
+void AGameBoardManager::EndMove()
+{
+	FinishedMove = false;
 }
 
 AActor* AGameBoardManager::GetClosestHex()

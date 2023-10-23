@@ -67,10 +67,14 @@ public:
 	void PlacePawn(AActor* InPawn);
 	UFUNCTION(BlueprintCallable)
 	AActor* GetMeeple(int index);
+	UFUNCTION(BlueprintCallable)
+	void EndMove();
 
 	void BoardSetup();
 	void SpawnPawn(AActor* Hex, FSaveState Character);
 	
 	UPROPERTY()
 	TArray<AActor*> Hexes;
+
+	bool FinishedMove;
 };
