@@ -43,6 +43,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	ASaveHandler* SaveHandler;
 
+	UPROPERTY(EditAnywhere)
+	FString CampfireWorld;
+
 private:
 	UPROPERTY()
 	TArray<AActor*> SpawnedHighlights;
@@ -69,6 +72,8 @@ public:
 	AActor* GetMeeple(int index);
 	UFUNCTION(BlueprintCallable)
 	void EndMove();
+	UFUNCTION(BlueprintCallable)
+	void EndCombat();
 
 	void BoardSetup();
 	void SpawnPawn(AActor* Hex, FSaveState Character);

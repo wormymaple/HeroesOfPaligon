@@ -18,6 +18,8 @@ void APlainsModifier::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GetHexes(GetWorld());
+	ModifyHexes();
 }
 
 void APlainsModifier::OnConstruction(const FTransform& Transform)
@@ -48,7 +50,7 @@ void APlainsModifier::ModifyHexes()
 		
 		float noise1 =  FMath::Clamp(static_cast<double>(FMath::PerlinNoise2D(GenNoisePos * NoiseScale * ScaleMultiplier)) + NoiseOffset, 0.0, 1.0 + NoiseOffset); 
 		float height = noise1 * OffsetHeight;
-		hex->SetActorLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height));
+		hexMesh->SetWorldLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height));
 
 		float noise2 = FMath::PerlinNoise2D(GenNoisePos * SecondNoiseScale * ScaleMultiplier);
 

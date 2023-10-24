@@ -165,6 +165,11 @@ void AGameBoardManager::EndMove()
 	FinishedMove = false;
 }
 
+void AGameBoardManager::EndCombat()
+{
+	UGameplayStatics::OpenLevel(GetWorld(), *CampfireWorld);
+}
+
 AActor* AGameBoardManager::GetClosestHex()
 {
 	UStaticMeshComponent* pawnMesh = InteractingPawn->GetOwner()->GetComponentByClass<UStaticMeshComponent>(); 
