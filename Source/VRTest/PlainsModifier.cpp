@@ -80,7 +80,7 @@ void APlainsModifier::ModifyHexes()
 				if (treeChance < PineTreeChance && PineTree != nullptr)
 				{
 					AActor* newPine = GetWorld()->SpawnActor(PineTree->GeneratedClass);
-					newPine->SetActorLocation(hexPos + DetailOffset);
+					newPine->SetActorLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height) + DetailOffset);
 					newPine->SetActorRotation(FRotator(0, FMath::RandRange(0, 360), 0));
 					
 					newPine->AttachToActor(hex, FAttachmentTransformRules::KeepWorldTransform);
