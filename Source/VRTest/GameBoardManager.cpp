@@ -72,7 +72,7 @@ void AGameBoardManager::SpawnPawn(AActor* Hex, FSaveState Character)
 	UPawnPiece* newPawnComp = newPawn->GetComponentByClass<UPawnPiece>(); 
 	newPawnComp->BoardManager = this;
 
-	newPawn->SetActorLocation(Hex->GetActorLocation() + PawnOffset);
+	newPawn->SetActorLocation(Hex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
 	newPawnComp->SetCurrentHex(Hex->GetComponentByClass<UHexComponent>());
 	newPawnComp->CurrentCharacter = Character;
 	
@@ -116,7 +116,7 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 	
 	for (AActor* accessibleHex : accessibleHexes)
 	{
-		FVector hexPos = accessibleHex->GetActorLocation();
+		FVector hexPos = accessibleHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation();
 
 		AActor* newHighlight = GetWorld()->SpawnActor(HighlightMesh->GeneratedClass);
 		newHighlight->SetActorLocation(hexPos + PawnOffset);

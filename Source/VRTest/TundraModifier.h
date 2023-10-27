@@ -22,7 +22,7 @@ protected:
 
 public:	
 	virtual void OnConstruction(const FTransform& Transform) override;
-	virtual void ModifyHexes() override;
+	virtual void ModifyHexes(bool InGame = false) override;
 
 	UPROPERTY(EditAnywhere)
 	float HexHeight;

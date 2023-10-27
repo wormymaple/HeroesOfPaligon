@@ -19,7 +19,7 @@ void APlainsModifier::BeginPlay()
 	Super::BeginPlay();
 
 	GetHexes(GetWorld());
-	ModifyHexes();
+	ModifyHexes(true);
 }
 
 void APlainsModifier::OnConstruction(const FTransform& Transform)
@@ -36,9 +36,10 @@ void APlainsModifier::Tick(float DeltaTime)
 
 }
 
-void APlainsModifier::ModifyHexes()
+void APlainsModifier::ModifyHexes(bool InGame)
 {
 	DestroyDetails(GetWorld());
+	if (InGame) NoisePos = GetRandomPos();
 	
 	for (AActor* hex : Hexes)
 	{

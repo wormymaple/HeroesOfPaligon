@@ -23,11 +23,12 @@ class VRTEST_API IProceduralModifier
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void ModifyHexes() = 0;
+	virtual void ModifyHexes(bool InGame = false) = 0;
 	void GetHexes(UObject* World);
 	void SetHexMobility(EComponentMobility::Type MobilityType);
 	ALootPlacer* GetLoot(UObject* World);
 	void DestroyDetails(UObject* World);
+	FVector2D GetRandomPos();
 
 	TArray<AActor*> Hexes;
 };

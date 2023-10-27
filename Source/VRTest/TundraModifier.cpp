@@ -25,7 +25,7 @@ void ATundraModifier::OnConstruction(const FTransform& Transform)
 }
 
 
-void ATundraModifier::ModifyHexes()
+void ATundraModifier::ModifyHexes(bool InGame)
 {
 	SetHexMobility(EComponentMobility::Movable);
 

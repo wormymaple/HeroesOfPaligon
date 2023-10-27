@@ -35,3 +35,8 @@ void IProceduralModifier::DestroyDetails(UObject* World)
 	for (AActor* detail : details) World->GetWorld()->DestroyActor(detail);
 }
 
+FVector2D IProceduralModifier::GetRandomPos()
+{
+	return FVector2D(FMath::RandRange(-10000, 10000), FMath::RandRange(-10000, 10000));
+}
+

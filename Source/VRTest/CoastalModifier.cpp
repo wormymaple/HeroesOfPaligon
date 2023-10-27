@@ -27,7 +27,7 @@ void ACoastalModifier::OnConstruction(const FTransform& Transform)
 	ModifyHexes();
 }
 
-void ACoastalModifier::ModifyHexes()
+void ACoastalModifier::ModifyHexes(bool InGame)
 {
 	SetHexMobility(EComponentMobility::Movable);
 

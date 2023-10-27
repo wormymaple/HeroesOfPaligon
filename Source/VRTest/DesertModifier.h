@@ -52,7 +52,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void ModifyHexes() override;
+	virtual void ModifyHexes(bool InGame = false) override;
 	virtual void OnConstruction(const FTransform& Transform) override;
 
 };

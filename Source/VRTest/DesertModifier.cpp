@@ -25,7 +25,7 @@ void ADesertModifier::OnConstruction(const FTransform& Transform)
 	ModifyHexes();
 }
 
-void ADesertModifier::ModifyHexes()
+void ADesertModifier::ModifyHexes(bool InGame)
 {
 	for (AActor* hex : Hexes)
 	{
