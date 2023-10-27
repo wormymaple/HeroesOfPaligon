@@ -19,6 +19,7 @@ public:
 	UPawnPiece();
 
 protected:
+	UPROPERTY()
 	UHexComponent* CurrentHex;
 	virtual void BeginPlay() override;
 
@@ -29,4 +30,6 @@ public:
 
 	UHexComponent* GetCurrentHex();
 	void SetCurrentHex(UHexComponent* InHex);
+
+	FSaveState CurrentCharacter;
 };

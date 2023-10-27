@@ -3,8 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HexComponent.h"
+#include "LootPlacer.h"
+#include "SaveHandler.h"
+#include "Engine/StaticMeshActor.h"
 #include "GameFramework/Actor.h"
 #include "GameBoardManager.generated.h"
+
+class UPawnPiece;
 
 UCLASS()
 class VRTEST_API AGameBoardManager : public AActor
@@ -28,8 +34,32 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UBlueprint* HighlightMesh;
 
+	UPROPERTY(EditAnywhere)
+	AStaticMeshActor* GhostPawn;
+
+	UPROPERTY(EditAnywhere)
+	ALootPlacer* LootPlacer;
+
+	UPROPERTY(EditAnywhere)
+	ASaveHandler* SaveHandler;
+
+	UPROPERTY(EditAnywhere)
+	FString CampfireWorld;
+
 private:
+	UPROPERTY()
 	TArray<AActor*> SpawnedHighlights;
+	bool Interacting;
+	UPROPERTY()
+	UPawnPiece* InteractingPawn;
+
+	AActor* GetClosestHex();
+
+	UPROPERTY()
+	TArray<UPawnPiece*> SpawnedPawns;
+
+	UPROPERTY()
+	TArray<AActor*> AccessingHexes;
 	
 public:	
 	// Called every frame
@@ -38,8 +68,18 @@ public:
 	void PickUpPawn(AActor* InPawn);
 	UFUNCTION(BlueprintCallable)
 	void PlacePawn(AActor* InPawn);
+	UFUNCTION(BlueprintCallable)
+	AActor* GetMeeple(int index);
+	UFUNCTION(BlueprintCallable)
+	void EndMove();
+	UFUNCTION(BlueprintCallable)
+	void EndCombat();
 
-	void SpawnPawn();
+	void BoardSetup();
+	void SpawnPawn(AActor* Hex, FSaveState Character);
 	
+	UPROPERTY()
 	TArray<AActor*> Hexes;
+
+	bool FinishedMove;
 };

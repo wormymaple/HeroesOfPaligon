@@ -44,4 +44,14 @@ void UHexComponent::GetAdjacentHexes(float Radius, TArray<AActor*> Hexes)
 	}
 }
 
+TArray<UHexComponent*> UHexComponent::ReturnAdjacentHexes()
+{
+	return AdjacentHexes;
+}
+
+void UHexComponent::AddLoot(AActor* Loot)
+{
+	LootActors.Add(Loot);
+}
+
 

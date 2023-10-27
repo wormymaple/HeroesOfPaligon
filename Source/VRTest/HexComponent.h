@@ -36,6 +36,13 @@ public:
 	
 	UPROPERTY(VisibleAnywhere)
 	HexType Type = HexType::None;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<UHexComponent*> ReturnAdjacentHexes();
 	
 	TArray<UHexComponent*> AdjacentHexes;
+
+	void AddLoot(AActor* Loot);
+	UPROPERTY()
+	TArray<AActor*> LootActors;
 };

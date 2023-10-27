@@ -22,6 +22,8 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	bool Interacting;
+
+	UPROPERTY()
 	UPawnPiece* InteractingPawn;
 
 public:	
@@ -30,6 +32,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float HexHeight;
+	UPROPERTY(EditAnywhere)
+	FVector DetailOffset;
 	
 	UPROPERTY(EditAnywhere)
 	FVector2D NoisePos;
@@ -62,4 +66,7 @@ public:
 	TArray<UMaterial*> Mats;
 	UPROPERTY(EditAnywhere)
 	TArray<HexType> Types;
+
+	UPROPERTY(EditAnywhere)
+	UBlueprint* RockDetail;
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HexComponent.h"
 #include "ProceduralModifier.h"
 #include "GameFramework/Actor.h"
 #include "PlainsModifier.generated.h"
@@ -40,9 +41,24 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float SecondNoiseScale;
+
+	UPROPERTY(EditAnywhere)
+	float ScaleMultiplier = 1;
 	
 	UPROPERTY(EditAnywhere)
 	TArray<UMaterial*> TypeMaterials;
+
+	UPROPERTY(EditAnywhere)
+	ALootPlacer* LootPlacer;
+
+	UPROPERTY(EditAnywhere)
+	UBlueprint* PineTree;
+
+	UPROPERTY(EditAnywhere)
+	float PineTreeChance;
+
+	UPROPERTY(EditAnywhere)
+	FVector DetailOffset;
 
 public:	
 	// Called every frame
