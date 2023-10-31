@@ -12,32 +12,23 @@
 class APlayerStats;
 
 USTRUCT()
-struct FPlayerInfo
-{
-	GENERATED_BODY()
-
-	UPROPERTY()
-	int UniqueID;
-
-	UPROPERTY()
-	int UsedCharacter;
-};
-
-USTRUCT()
-struct FSaveState
+struct FCharSave
 {
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	FString Name;
+	
 	UPROPERTY()
 	int Race;
 	UPROPERTY()
 	int Color;
 
 	UPROPERTY()
-	int Mana;
-	UPROPERTY()
 	int Health;
+	UPROPERTY()
+	int Mana;
 	
 	UPROPERTY()
 	int Wit;
@@ -49,42 +40,49 @@ public:
 	int Haste;
 	UPROPERTY()
 	int Vitality;
-};
-
-USTRUCT()
-struct FPlayerPackage
-{
-	GENERATED_BODY()
 
 	UPROPERTY()
-	FPlayerInfo PlayerInfo;
+	int Personality;
 
-	UPROPERTY()
-	TArray<FSaveState> CharSaves;
-};
-
-USTRUCT()
-struct FWorldState
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY()
-	int SaveID;
+	FCharSave() { Name = TEXT("Steve the Stoic"); }
 	
-	UPROPERTY()
-	int LastBiome;
+	FCharSave(FString CharName, TArray<int> VanityStats, TArray<int> ResourceStats, TArray<int> CoreStats, int CharPersonality)
+	{
+		Name = CharName;
+
+		Race = VanityStats[0];
+		Color = VanityStats[1];
+
+		Health = ResourceStats[0];
+		Mana = ResourceStats[1];
+
+		Wit = ResourceStats[0];
+		Might = ResourceStats[1];
+		Soul = ResourceStats[2];
+		Haste = ResourceStats[3];
+		Vitality = ResourceStats[4];
+
+		Personality = CharPersonality;
+	}
 };
 
 USTRUCT()
 struct FGameSave
 {
 	GENERATED_BODY()
+	
 	UPROPERTY()
-	FWorldState WorldState;
+	int SaveID = 1;
 
 	UPROPERTY()
-	TArray<FPlayerPackage> PlayerPackages;
+	FString LastBiome = TEXT("None");
+
+	FGameSave() { }
+	FGameSave(int ID, FString Biome = TEXT("None"))
+	{
+		SaveID = ID;
+		LastBiome = Biome;
+	}
 };
 
 UCLASS()
@@ -111,7 +109,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void SaveGame(TArray<FPlayerPackage> Players, int SaveID = 0);
+	void SaveChars(TArray<FCharSave> Characters);
+	TArray<FCharSave> ReadChars();
+	
+	void SaveGame(FGameSave GameSave);
 	FGameSave ReadGame(int SaveID);
 
 	UPROPERTY(EditAnywhere)

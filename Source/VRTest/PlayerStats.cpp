@@ -27,23 +27,21 @@ void APlayerStats::Tick(float DeltaTime)
 
 }
 
-void APlayerStats::ShowStats(FPlayerPackage playerPackage)
+void APlayerStats::ShowStats(FCharSave Character)
 {
 	TArray<AActor*> AttachedActors;
 	GetAttachedActors(AttachedActors);
 	StatsText = AttachedActors[0]->GetComponentByClass<UTextRenderComponent>();
-
-	FSaveState currentChar = playerPackage.CharSaves[playerPackage.PlayerInfo.UsedCharacter];
-	FString statsString = "Health: " + StringHelper::IntToString(currentChar.Health) + "\nMana: " + StringHelper::IntToString(currentChar.Mana);
+	FString statsString = "Health: " + StringHelper::IntToString(Character.Health) + "\nMana: " + StringHelper::IntToString(Character.Mana);
 	
 	StatsText->SetText(FText::FromString(statsString));
 
 	TArray<int> coreStats = {
-		currentChar.Vitality,
-		currentChar.Might,
-		currentChar.Soul,
-		currentChar.Wit,
-		currentChar.Haste
+		Character.Vitality,
+		Character.Might,
+		Character.Soul,
+		Character.Wit,
+		Character.Haste
 	};
 	StatDisc->DrawShape(coreStats);
 }

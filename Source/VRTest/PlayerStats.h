@@ -33,6 +33,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-    void ShowStats(FPlayerPackage playerPackage);
+	void ShowStats(FCharSave Character);
 
 };

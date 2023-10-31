@@ -76,7 +76,7 @@ public:
 	void EndCombat();
 
 	void BoardSetup();
-	void SpawnPawn(AActor* Hex, FSaveState Character);
+	void SpawnPawn(AActor* Hex, FCharSave Character);
 	
 	UPROPERTY()
 	TArray<AActor*> Hexes;

@@ -4,6 +4,7 @@
 #include "SaveHandler.h"
 
 #include "PlayerStats.h"
+#include "StringHelper.h"
 #include "Runtime/JsonUtilities/Public/JsonObjectConverter.h"
 
 // Sets default values
@@ -30,29 +31,9 @@ void ASaveHandler::BeginPlay()
 		platformFile.CreateDirectory(*SaveDir);
 	}
 
-	FSaveState newChar;
-	newChar.Mana = 15;
-	newChar.Health = 15;
-
-	newChar.Wit = 12;
-	newChar.Might = 14;
-	newChar.Soul = 7;
-	newChar.Haste = 10;
-	newChar.Vitality = 5;
-	
-	FPlayerPackage newPlayer;
-	newPlayer.CharSaves = TArray<FSaveState> {newChar};
-
-	newPlayer.PlayerInfo.UniqueID = 0;
-	newPlayer.PlayerInfo.UsedCharacter = 0;
-	
-	//SaveGame(TArray<FPlayerPackage> {newPlayer}, 22119);
-
 	if (IsInCampfire)
 	{
-		FGameSave readGame = ReadGame(22119);
-
-		PlayerStats->ShowStats(readGame.PlayerPackages[0]);
+		FGameSave readGame = ReadGame(1);
 	}
 }
 
@@ -63,27 +44,60 @@ void ASaveHandler::Tick(float DeltaTime)
 
 }
 
-void ASaveHandler::SaveGame(TArray<FPlayerPackage> Players, int SaveID)
+void ASaveHandler::SaveChars(TArray<FCharSave> Characters)
 {
-	if (SaveID == 0) SaveID = FMath::RandRange(0, 65536);
+	FString charDir = SaveDir + "/CharacterSaves";
 
-	FWorldState newWorldState;
-	newWorldState.SaveID = SaveID;
+	int i = 0;
+	for (FCharSave character : Characters)
+	{
+		FString json = "";
+		FJsonObjectConverter::UStructToJsonObjectString(character, json, 0, 0);
 
-	FGameSave newGameSave;
-	newGameSave.WorldState = newWorldState;
-	newGameSave.PlayerPackages = Players;
+		FFileHelper::SaveStringToFile(json, *(SaveDir + "/CharSave_" + StringHelper::IntToString(i) + ".json"));
+
+		i += 1;
+	}
+}
+
+TArray<FCharSave> ASaveHandler::ReadChars()
+{
+	TArray<FCharSave> readChars;
+
+	for (int i = 0; i < 3; i += 1)
+	{
+		FString path = SaveDir + "/CharSave_" + StringHelper::IntToString(i) + ".json";
+		if (!FPaths::FileExists(*path)) continue;
+
+		FString json = "";
+		FFileHelper::LoadFileToString(json, *path);
+
+		FCharSave readChar;
+		FJsonObjectConverter::JsonObjectStringToUStruct(json, &readChar, 0, 0);
+		readChars.Add(readChar);
+	}
+
+	return readChars;
+}
+
+void ASaveHandler::SaveGame(FGameSave GameSave)
+{
+	FString gameSaveDir = SaveDir + "/GameSaves/Game_" + StringHelper::IntToString(GameSave.SaveID) + ".json";
 	
 	FString json = "";
-	FJsonObjectConverter::UStructToJsonObjectString(newGameSave, json, 0, 0);
+	FJsonObjectConverter::UStructToJsonObjectString(GameSave, json, 0, 0);
 
-	FFileHelper::SaveStringToFile(json, *(SaveDir + "/GameSave" + FString::Printf(TEXT("%i"), SaveID) + ".json"));
+	FFileHelper::SaveStringToFile(json, *gameSaveDir);
 }
 
 FGameSave ASaveHandler::ReadGame(int SaveID)
 {
+	FString gameSaveDir = SaveDir + "/GameSaves/Game_" + StringHelper::IntToString(SaveID) + ".json";
+
+	if (!FPaths::FileExists(gameSaveDir)) return FGameSave(SaveID, "None");
+	
 	FString json = "";
-	FFileHelper::LoadFileToString(json, *(SaveDir + "/GameSave" + FString::Printf(TEXT("%i"), SaveID) + ".json"));
+	FFileHelper::LoadFileToString(json, *gameSaveDir);
 	FGameSave readSave;
 	FJsonObjectConverter::JsonObjectStringToUStruct(json, &readSave, 0, 0);
 

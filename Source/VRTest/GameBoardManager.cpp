@@ -46,12 +46,7 @@ void AGameBoardManager::BoardSetup()
 	}
 
 	UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
-	for (int i = 0; i < loadedData.PlayerPackages.Num(); i += 1)
-	{
-		FPlayerPackage player = loadedData.PlayerPackages[i];
-		FSaveState character = player.CharSaves[player.PlayerInfo.UsedCharacter];
-		SpawnPawn(hexComp->AdjacentHexes[i]->GetOwner(), character);
-	}
+	// TODO - spawn pawn pieces and give them player stats from loadedData
 }
 
 
@@ -66,7 +61,7 @@ void AGameBoardManager::Tick(float DeltaTime)
 	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 }
 
-void AGameBoardManager::SpawnPawn(AActor* Hex, FSaveState Character)
+void AGameBoardManager::SpawnPawn(AActor* Hex, FCharSave Character)
 {
 	AActor* newPawn = GetWorld()->SpawnActor(PawnBlueprint->GeneratedClass);
 	UPawnPiece* newPawnComp = newPawn->GetComponentByClass<UPawnPiece>(); 

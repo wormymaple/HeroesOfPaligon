@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "Math/UnrealMathUtility.h"
 #include "StatDisc.h"
+#include "Math/UnrealMathUtility.h"
 #include "ProceduralMeshComponent.h"
-#include "StaticMeshAttributes.h"
 
 
 // Sets default values
