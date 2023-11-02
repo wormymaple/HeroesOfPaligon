@@ -44,7 +44,7 @@ public:
 	UPROPERTY()
 	int Personality;
 
-	FCharSave() { Name = TEXT("Steve the Stoic"); }
+	FCharSave() { Name = TEXT("Steve the Stoic"); } 
 	
 	FCharSave(FString CharName, TArray<int> VanityStats, TArray<int> ResourceStats, TArray<int> CoreStats, int CharPersonality)
 	{
