@@ -134,7 +134,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 
 	if (FinishedMove)
 	{
-		pawnMesh->SetWorldLocation(pawnComponent->GetCurrentHex()->GetOwner()->GetActorLocation() + PawnOffset);
+		pawnMesh->SetWorldLocation(pawnComponent->GetCurrentHex()->GetOwner()->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
 		pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 		return;
 	}
