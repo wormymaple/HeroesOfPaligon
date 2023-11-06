@@ -31,5 +31,6 @@ public:
 	UHexComponent* GetCurrentHex();
 	void SetCurrentHex(UHexComponent* InHex);
 
+	UPROPERTY(VisibleAnywhere)
 	FCharSave CurrentCharacter;
 };

@@ -45,10 +45,17 @@ void AGameBoardManager::BoardSetup()
 		closestHex = hex;
 	}
 
-	UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
-	// TODO - spawn pawn pieces and give them player stats from loadedData
+	SpawnPawn(closestHex, CreateCharInfoForClass(0));
 }
 
+FCharSave AGameBoardManager::CreateCharInfoForClass(int PlayerClass)
+{
+	FCharSave newChar;
+	newChar.CharClass = PlayerClass;
+	newChar.Haste = 10;
+
+	return newChar;
+}
 
 // Called every frame
 void AGameBoardManager::Tick(float DeltaTime)
@@ -160,9 +167,12 @@ void AGameBoardManager::EndMove()
 	FinishedMove = false;
 }
 
-void AGameBoardManager::EndCombat()
+void AGameBoardManager::EndGame()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), *CampfireWorld);
+	for (UPawnPiece* Pawn : SpawnedPawns)
+	{
+		GetWorld()->DestroyActor(Pawn->GetOwner());
+	}
 }
 
 AActor* AGameBoardManager::GetClosestHex()

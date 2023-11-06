@@ -19,6 +19,9 @@ struct FCharSave
 public:
 	UPROPERTY()
 	FString Name;
+
+	UPROPERTY()
+	int CharClass;
 	
 	UPROPERTY()
 	int Race;
@@ -46,10 +49,11 @@ public:
 
 	FCharSave() { Name = TEXT("Steve the Stoic"); } 
 	
-	FCharSave(FString CharName, TArray<int> VanityStats, TArray<int> ResourceStats, TArray<int> CoreStats, int CharPersonality)
+	FCharSave(FString CharName, int InClass, TArray<int> VanityStats, TArray<int> ResourceStats, TArray<int> CoreStats, int CharPersonality)
 	{
 		Name = CharName;
-
+		CharClass = InClass;
+		
 		Race = VanityStats[0];
 		Color = VanityStats[1];
 

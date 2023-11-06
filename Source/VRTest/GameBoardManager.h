@@ -73,9 +73,10 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndMove();
 	UFUNCTION(BlueprintCallable)
-	void EndCombat();
+	void EndGame();
 
 	void BoardSetup();
+	FCharSave CreateCharInfoForClass(int PlayerClass);
 	void SpawnPawn(AActor* Hex, FCharSave Character);
 	
 	UPROPERTY()

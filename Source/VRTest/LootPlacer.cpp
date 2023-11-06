@@ -83,7 +83,7 @@ void ALootPlacer::PlaceEnemies()
 			closestHex = hex;
 		}
 
-		SpawnEnemy(closestHex->GetActorLocation() + EnemyOffset);
+		SpawnEnemy(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + EnemyOffset);
 
 		UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
 		hexComp->GetAdjacentHexes(10, Hexes);
@@ -91,7 +91,7 @@ void ALootPlacer::PlaceEnemies()
 		int spawnCount = EnemySpawnCount > hexCount ? hexCount : EnemySpawnCount;
 		for (int j = 0; j < spawnCount; j += 1)
 		{
-			SpawnEnemy(hexComp->AdjacentHexes[j]->GetOwner()->GetActorLocation() + EnemyOffset);
+			SpawnEnemy(hexComp->AdjacentHexes[j]->GetOwner()->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + EnemyOffset);
 		}
 	}
 }
