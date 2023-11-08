@@ -53,6 +53,10 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UBlueprint* PineTree;
+	UPROPERTY(EditAnywhere)
+	UBlueprint* PalmTree;
+	UPROPERTY(EditAnywhere)
+	UBlueprint* RockDetail;
 
 	UPROPERTY(EditAnywhere)
 	float PineTreeChance;

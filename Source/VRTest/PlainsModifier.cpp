@@ -69,21 +69,30 @@ void APlainsModifier::ModifyHexes(bool InGame)
 			{
 				TileMat = TypeMaterials[TypeMaterials.Num() - 1];
 				hexComp->Type = HexType::Rock;
+
+				if (RockDetail != nullptr)
+				{
+					AActor* newRock = GetWorld()->SpawnActor(RockDetail->GeneratedClass);
+					newRock->SetActorLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height) + DetailOffset);
+					newRock->SetActorRotation(FRotator(0, FMath::RandRange(0, 360), 0));
+				
+					newRock->AttachToActor(hex, FAttachmentTransformRules::KeepWorldTransform);
+				}
 			}
 			else
 			{
 				int matIndex = ((noise2 + 1) / 2) * (TypeMaterials.Num() - 2);
 				TileMat = TypeMaterials[matIndex + 1];
 
-				hexComp->Type = HexType::Ground;
-
+				hexComp->Type = matIndex == 0 ? HexType::Sand : HexType::Ground;
+				
 				float treeChance = FMath::RandRange(0.0, 1.0);
-				if (treeChance < PineTreeChance && PineTree != nullptr)
+				if (treeChance < PineTreeChance && PineTree != nullptr && PalmTree != nullptr)
 				{
-					AActor* newPine = GetWorld()->SpawnActor(PineTree->GeneratedClass);
+					AActor* newPine = GetWorld()->SpawnActor(matIndex == 0 ? PalmTree->GeneratedClass : PineTree->GeneratedClass);
 					newPine->SetActorLocation(FVector(hexPos.X, hexPos.Y, StartHeight + height) + DetailOffset);
 					newPine->SetActorRotation(FRotator(0, FMath::RandRange(0, 360), 0));
-					
+				
 					newPine->AttachToActor(hex, FAttachmentTransformRules::KeepWorldTransform);
 				}
 			}
