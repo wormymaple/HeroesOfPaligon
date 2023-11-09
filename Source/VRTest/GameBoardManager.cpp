@@ -65,7 +65,7 @@ void AGameBoardManager::Tick(float DeltaTime)
 	if (!Interacting) return;
 
 	AActor* closestHex = GetClosestHex();
-	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
+	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
 }
 
 void AGameBoardManager::SpawnPawn(AActor* Hex, FCharSave Character)
@@ -149,7 +149,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 
 	AActor* closestHex = GetClosestHex();
 	
-	pawnMesh->SetWorldLocation(closestHex->GetOwner()->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
+	pawnMesh->SetWorldLocation(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 	pawnComponent->SetCurrentHex(closestHex->GetComponentByClass<UHexComponent>());
 

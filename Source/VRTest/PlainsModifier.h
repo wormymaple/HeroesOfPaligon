@@ -20,6 +20,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void PreInitializeComponents() override;
 	
 	UPROPERTY(EditAnywhere)
 	FVector2D NoisePos;
