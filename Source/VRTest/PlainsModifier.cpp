@@ -17,7 +17,12 @@ APlainsModifier::APlainsModifier()
 void APlainsModifier::BeginPlay()
 {
 	Super::BeginPlay();
+}
 
+void APlainsModifier::PreInitializeComponents()
+{
+	Super::PreInitializeComponents();
+	
 	GetHexes(GetWorld());
 	ModifyHexes(true);
 }
