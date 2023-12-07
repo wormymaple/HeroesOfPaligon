@@ -15,3 +15,8 @@ FString StringHelper::IntToString(int n)
 {
 	return FString::Printf(TEXT("%i"), n);
 }
+
+FString StringHelper::VectorToString(FVector v)
+{
+	return FString::Printf(TEXT("%f"), v.X) + ", " + FString::Printf(TEXT("%f"), v.Y) + ", " + FString::Printf(TEXT("%f"), v.Z);
+}

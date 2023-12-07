@@ -14,4 +14,5 @@ public:
 	~StringHelper();
 
 	static FString IntToString(int n);
+	static FString VectorToString(FVector v);
 };
