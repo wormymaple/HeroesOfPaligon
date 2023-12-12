@@ -19,3 +19,17 @@ TArray<FLinearColor> ABiomeModifier::GetHexColors(TArray<FVector> hexPositions)
 	return colors;
 }
 
+TArray<FVector> ABiomeModifier::GetHexOffsets(TArray<FVector> hexPositions)
+{
+	return hexPositions;
+}
+
+TArray<UBlueprint*> ABiomeModifier::GetHexDetails(TArray<FVector> hexPositions)
+{
+	TArray<UBlueprint*> details;
+	details.Init(nullptr, hexPositions.Num());
+
+	return details;
+}
+
+

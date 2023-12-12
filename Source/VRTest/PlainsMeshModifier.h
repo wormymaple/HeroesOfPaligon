@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "BiomeModifier.h"
 #include "MeshBiomeModifier.h"
+#include "MeshBoardGenerator.h"
 #include "GameFramework/Actor.h"
 #include "PlainsMeshModifier.generated.h"
 
@@ -18,13 +19,32 @@ public:
 	APlainsMeshModifier();
 
 protected:
+	UPROPERTY(EditAnywhere)
+	float NoiseScale;
 
 	UPROPERTY(EditAnywhere)
-	FLinearColor GrassColor;
+	float NoiseOffset;
+	
 	UPROPERTY(EditAnywhere)
-	FLinearColor RockColor;
+	float NoiseHeight;
 
-public:	
+	UPROPERTY(EditAnywhere)
+	TArray<float> cutoffStaircase;
+	UPROPERTY(EditAnywhere)
+	TArray<FLinearColor> staircaseColors;
+	UPROPERTY(EditAnywhere)
+	TArray<UBlueprint*> staircaseBlueprints;
+	
+	UPROPERTY(EditAnywhere)
+	float DetailChance;
+
+	UPROPERTY(EditAnywhere)
+	AMeshBoardGenerator* hexBoard;
+
+public:
+	virtual void OnConstruction(const FTransform& Transform) override;
+	virtual TArray<FVector> GetHexOffsets(TArray<FVector> hexPositions) override;
 	virtual TArray<FLinearColor> GetHexColors(TArray<FVector> hexPositions) override;
-
+	virtual TArray<UBlueprint*> GetHexDetails(TArray<FVector> hexPositions) override;
+	TArray<int> GetCutoffs(TArray<FVector> hexPositions);
 };

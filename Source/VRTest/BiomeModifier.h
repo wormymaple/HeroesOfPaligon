@@ -18,6 +18,7 @@ public:
 protected:
 
 public:
+	virtual TArray<FVector> GetHexOffsets(TArray<FVector> hexPositions);
 	virtual TArray<FLinearColor> GetHexColors(TArray<FVector> hexPositions);
-	
+	virtual TArray<UBlueprint*> GetHexDetails(TArray<FVector> hexPositions);
 };

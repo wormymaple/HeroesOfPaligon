@@ -40,12 +40,13 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float HexDepth = 10;
-
 	UPROPERTY(EditAnywhere)
-	FLinearColor hexColor;
+	float WaterOffset;
+
 
 	UPROPERTY(EditAnywhere)
 	ABiomeModifier* ActiveModifier;
 
 	void GenerateBoard();
+	void GenerateDetail(FVector HexPos, UBlueprint* Detail);
 };

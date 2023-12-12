@@ -3,6 +3,7 @@
 
 #include "MeshBoardGenerator.h"
 #include "StringHelper.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMeshBoardGenerator::AMeshBoardGenerator()
@@ -34,6 +35,12 @@ void AMeshBoardGenerator::OnConstruction(const FTransform& Transform)
 
 void AMeshBoardGenerator::GenerateBoard()
 {
+	// Destroy details
+	TArray<AActor*> details;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("detail"), details);
+
+	for (AActor* detail : details) GetWorld()->DestroyActor(detail);
+	
 	// Fan
 	TArray<FVector> hexVectors;
 	for (int i = 0; i < 6; i += 1)
@@ -88,7 +95,7 @@ void AMeshBoardGenerator::GenerateBoard()
 		shiftDir = i < BoardWidth - 1 ? -1 : 1; 
 
 		for (int j = 0; j < layerCount; j += 1){
-			FVector spawnPoint = FVector(depthX + (j * SeparationDist * 2), depthY, FMath::Sin(static_cast<float>(depthX + j + depthY)) * 4);
+			FVector spawnPoint = FVector(depthX + (j * SeparationDist * 2), depthY,0);
 			hexPositions.Add(spawnPoint);
 		}
 
@@ -100,26 +107,39 @@ void AMeshBoardGenerator::GenerateBoard()
 	TArray<FVector> allHexVectors;
 	TArray<int> allHexTris;
 
+	TArray<FVector> biomeHexOffsets;
 	TArray<FLinearColor> biomeHexColors;
+	TArray<UBlueprint*> biomeHexDetails;
 	if (ActiveModifier != nullptr)
 	{
-		biomeHexColors = ActiveModifier->GetHexColors(hexPositions);
+		biomeHexOffsets = ActiveModifier->GetHexOffsets(hexPositions);
+		biomeHexColors = ActiveModifier->GetHexColors(biomeHexOffsets);
+		biomeHexDetails = ActiveModifier->GetHexDetails(biomeHexOffsets);
 	}
-	else biomeHexColors.Init(FLinearColor::White, hexPositions.Num());
+	else
+	{
+		biomeHexOffsets = hexPositions;
+		biomeHexColors.Init(FLinearColor::White, hexPositions.Num());
+		biomeHexDetails.Init(nullptr, hexPositions.Num());
+	}
 	
 	TArray<FLinearColor> allHexColors;
-	
+
+	// Draw hexes
 	int hexCount = 0;
 	for (int i = 0; i < hexPositions.Num(); i += 1)
 	{
-		FVector point = hexPositions[i];
+		FLinearColor color = biomeHexColors[i];
+		
+		FVector point = biomeHexOffsets[i];
+		if (color == FLinearColor::Blue) point.Z = WaterOffset;
 		
 		TArray<FVector> newHexVectors;
 		TArray<int> newTriangles;
 		for (FVector hexVector : hexVectors)
 		{
 			newHexVectors.Add(hexVector + point);
-			allHexColors.Add(biomeHexColors[i]);
+			allHexColors.Add(color);
 		}
 		for (int tri : triangles)
 		{
@@ -128,6 +148,8 @@ void AMeshBoardGenerator::GenerateBoard()
 
 		allHexVectors += newHexVectors;
 		allHexTris += newTriangles;
+
+		GenerateDetail(point, biomeHexDetails[i]);
 	
 		hexCount += 1;
 	}
@@ -137,4 +159,17 @@ void AMeshBoardGenerator::GenerateBoard()
 
 	GEngine->AddOnScreenDebugMessage(0, 10, FColor::White, StringHelper::IntToString(hexCount));
 }
+
+void AMeshBoardGenerator::GenerateDetail(FVector HexPos, UBlueprint* Detail)
+{
+	if (Detail == nullptr) return;
+
+	FActorSpawnParameters params;
+	FVector spawnPos = GetActorLocation() + HexPos;
+	FRotator spawnRot = FRotator(FMath::RandRange(-10, 10), FMath::RandRange(0.0, 360.0), FMath::RandRange(-10, 10));
+	AActor* newDetail = GetWorld()->SpawnActor(Detail->GeneratedClass, &spawnPos, &spawnRot, params);
+	
+	newDetail->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
+}
+
 
