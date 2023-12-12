@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "HexComponent.h"
 #include "GameFramework/Actor.h"
 #include "BiomeModifier.generated.h"
 
@@ -21,4 +22,5 @@ public:
 	virtual TArray<FVector> GetHexOffsets(TArray<FVector> hexPositions);
 	virtual TArray<FLinearColor> GetHexColors(TArray<FVector> hexPositions);
 	virtual TArray<UBlueprint*> GetHexDetails(TArray<FVector> hexPositions);
+	virtual TArray<HexType> GetHexTypes(TArray<FVector> hexPositions);
 };

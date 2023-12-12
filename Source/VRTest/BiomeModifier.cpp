@@ -32,4 +32,12 @@ TArray<UBlueprint*> ABiomeModifier::GetHexDetails(TArray<FVector> hexPositions)
 	return details;
 }
 
+TArray<HexType> ABiomeModifier::GetHexTypes(TArray<FVector> hexPositions)
+{
+	TArray<HexType> hexTypes;
+	hexTypes.Init(HexType::None, hexPositions.Num());
+
+	return hexTypes;
+}
+
 

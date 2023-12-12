@@ -43,10 +43,13 @@ public:
 	UPROPERTY(EditAnywhere)
 	float WaterOffset;
 
+	UPROPERTY(EditAnywhere)
+	UBlueprint* HexActor;
 
 	UPROPERTY(EditAnywhere)
 	ABiomeModifier* ActiveModifier;
 
 	void GenerateBoard();
-	void GenerateDetail(FVector HexPos, UBlueprint* Detail);
+	void GenerateDetail(const FVector& HexPos, const UBlueprint* Detail);
+	void SpawnHexAtHexPos(const FVector& HexPos, HexType type);
 };

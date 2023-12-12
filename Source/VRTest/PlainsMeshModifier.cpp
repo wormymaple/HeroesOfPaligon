@@ -79,6 +79,26 @@ TArray<UBlueprint*> APlainsMeshModifier::GetHexDetails(TArray<FVector> hexPositi
 	return details;
 }
 
+TArray<HexType> APlainsMeshModifier::GetHexTypes(TArray<FVector> hexPositions)
+{
+	TArray<HexType> hexTypes;
+
+	for (int i : GetCutoffs(hexPositions))
+	{
+		if (i == -1) hexTypes.Add(HexType::Water);
+		else
+		{
+			if (i <= staircaseTypes.Num() - 1)
+			{
+				hexTypes.Add(staircaseTypes[i]);
+			}
+			else hexTypes.Add(HexType::None);
+		}
+	}
+	
+	return hexTypes;
+}
+
 TArray<int> APlainsMeshModifier::GetCutoffs(TArray<FVector> hexPositions)
 {
 	TArray<int> indices;

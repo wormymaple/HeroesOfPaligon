@@ -34,6 +34,8 @@ protected:
 	TArray<FLinearColor> staircaseColors;
 	UPROPERTY(EditAnywhere)
 	TArray<UBlueprint*> staircaseBlueprints;
+	UPROPERTY(EditAnywhere)
+	TArray<HexType> staircaseTypes;
 	
 	UPROPERTY(EditAnywhere)
 	float DetailChance;
@@ -46,5 +48,6 @@ public:
 	virtual TArray<FVector> GetHexOffsets(TArray<FVector> hexPositions) override;
 	virtual TArray<FLinearColor> GetHexColors(TArray<FVector> hexPositions) override;
 	virtual TArray<UBlueprint*> GetHexDetails(TArray<FVector> hexPositions) override;
+	virtual TArray<HexType> GetHexTypes(TArray<FVector> hexPositions);
 	TArray<int> GetCutoffs(TArray<FVector> hexPositions);
 };
