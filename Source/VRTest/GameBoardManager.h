@@ -38,9 +38,6 @@ protected:
 	AStaticMeshActor* GhostPawn;
 
 	UPROPERTY(EditAnywhere)
-	ALootPlacer* LootPlacer;
-
-	UPROPERTY(EditAnywhere)
 	ASaveHandler* SaveHandler;
 
 	UPROPERTY(EditAnywhere)

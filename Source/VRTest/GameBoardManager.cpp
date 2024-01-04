@@ -22,15 +22,13 @@ void AGameBoardManager::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Hex"), Hexes);
+	GEngine->AddOnScreenDebugMessage(100, 100, FColor::Black, TEXT("YES"));
 
 	BoardSetup();
-	//LootPlacer->PlaceLoot();
 }
 
 void AGameBoardManager::BoardSetup()
 {
-	FGameSave loadedData = SaveHandler->ReadGame(22119);
-	
 	AActor* closestHex = Hexes[0];
 	float closestDist = 9999999999;
 	for (AActor* hex : Hexes)
@@ -65,7 +63,7 @@ void AGameBoardManager::Tick(float DeltaTime)
 	if (!Interacting) return;
 
 	AActor* closestHex = GetClosestHex();
-	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
+	GhostPawn->GetStaticMeshComponent()->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 }
 
 void AGameBoardManager::SpawnPawn(AActor* Hex, FCharSave Character)
@@ -74,7 +72,7 @@ void AGameBoardManager::SpawnPawn(AActor* Hex, FCharSave Character)
 	UPawnPiece* newPawnComp = newPawn->GetComponentByClass<UPawnPiece>(); 
 	newPawnComp->BoardManager = this;
 
-	newPawn->SetActorLocation(Hex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
+	newPawn->SetActorLocation(Hex->GetActorLocation() + PawnOffset);
 	newPawnComp->SetCurrentHex(Hex->GetComponentByClass<UHexComponent>());
 	newPawnComp->CurrentCharacter = Character;
 	
