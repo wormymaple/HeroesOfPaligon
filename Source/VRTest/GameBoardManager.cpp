@@ -115,7 +115,7 @@ void AGameBoardManager::PickUpPawn(AActor* InPawn)
 	
 	for (AActor* accessibleHex : accessibleHexes)
 	{
-		FVector hexPos = accessibleHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation();
+		FVector hexPos = accessibleHex->GetActorLocation();
 
 		AActor* newHighlight = GetWorld()->SpawnActor(HighlightMesh->GeneratedClass);
 		newHighlight->SetActorLocation(hexPos + PawnOffset);
@@ -133,7 +133,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 
 	if (FinishedMove)
 	{
-		pawnMesh->SetWorldLocation(pawnComponent->GetCurrentHex()->GetOwner()->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
+		pawnMesh->SetWorldLocation(pawnComponent->GetCurrentHex()->GetOwner()->GetActorLocation() + PawnOffset);
 		pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 		return;
 	}
@@ -146,7 +146,7 @@ void AGameBoardManager::PlacePawn(AActor* InPawn)
 
 	AActor* closestHex = GetClosestHex();
 	
-	pawnMesh->SetWorldLocation(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + PawnOffset);
+	pawnMesh->SetWorldLocation(closestHex->GetActorLocation() + PawnOffset);
 	pawnMesh->SetWorldRotation(FRotator::ZeroRotator);
 	pawnComponent->SetCurrentHex(closestHex->GetComponentByClass<UHexComponent>());
 
