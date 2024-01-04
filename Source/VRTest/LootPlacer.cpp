@@ -86,7 +86,7 @@ void ALootPlacer::PlaceEnemies()
 		SpawnEnemy(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + EnemyOffset);
 
 		UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
-		hexComp->GetAdjacentHexes(10, Hexes);
+		hexComp->GetAdjacentHexes(10, &Hexes);
 		int hexCount = hexComp->AdjacentHexes.Num();
 		int spawnCount = EnemySpawnCount > hexCount ? hexCount : EnemySpawnCount;
 		for (int j = 0; j < spawnCount; j += 1)

@@ -52,4 +52,5 @@ public:
 	void GenerateBoard();
 	void GenerateDetail(const FVector& HexPos, const UBlueprint* Detail);
 	void SpawnHexAtHexPos(const FVector& HexPos, HexType type);
+	void GenerateAdjacentHexes();
 };

@@ -22,7 +22,6 @@ void AGameBoardManager::BeginPlay()
 	Super::BeginPlay();
 
 	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName("Hex"), Hexes);
-	GEngine->AddOnScreenDebugMessage(100, 100, FColor::Black, TEXT("YES"));
 
 	BoardSetup();
 }

@@ -32,7 +32,7 @@ protected:
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
-	void GetAdjacentHexes(float Radius, TArray<AActor*> Hexes);
+	void GetAdjacentHexes(float Radius, TArray<AActor*>* Hexes);
 	
 	UPROPERTY(VisibleAnywhere)
 	HexType Type = HexType::None;
@@ -45,4 +45,7 @@ public:
 	void AddLoot(AActor* Loot);
 	UPROPERTY()
 	TArray<AActor*> LootActors;
+
+	UPROPERTY(VisibleAnywhere)
+	int AdjacentCount;
 };

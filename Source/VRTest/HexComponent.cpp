@@ -30,11 +30,11 @@ void UHexComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorCo
 	// ...
 }
 
-void UHexComponent::GetAdjacentHexes(float Radius, TArray<AActor*> Hexes)
+void UHexComponent::GetAdjacentHexes(float Radius, TArray<AActor*>* Hexes)
 {
 	FVector2D hexPos = FVector2D(GetOwner()->GetActorLocation());
 	AdjacentHexes.Empty();
-	for (AActor* hex : Hexes)
+	for (AActor* hex : *Hexes)
 	{
 		float dist = FVector2D::Distance(hexPos, FVector2D(hex->GetActorLocation())); 
 		if (dist <= Radius && dist > 2)
@@ -42,6 +42,8 @@ void UHexComponent::GetAdjacentHexes(float Radius, TArray<AActor*> Hexes)
 			AdjacentHexes.Add(hex->GetComponentByClass<UHexComponent>());
 		}
 	}
+
+	AdjacentCount = AdjacentHexes.Num();
 }
 
 TArray<UHexComponent*> UHexComponent::ReturnAdjacentHexes()

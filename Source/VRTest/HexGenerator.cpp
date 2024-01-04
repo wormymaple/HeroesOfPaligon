@@ -34,7 +34,7 @@ void AHexGenerator::GenerateAdjacentHexes()
 	for (AActor* hex : Hexes)
 	{	
 		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
-		hexComp->GetAdjacentHexes(Dist + 2, Hexes);
+		hexComp->GetAdjacentHexes(Dist + 2, &Hexes);
 	}
 }
 

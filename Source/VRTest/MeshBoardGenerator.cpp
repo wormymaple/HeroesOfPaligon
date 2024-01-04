@@ -19,6 +19,8 @@ AMeshBoardGenerator::AMeshBoardGenerator()
 void AMeshBoardGenerator::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GenerateAdjacentHexes();
 }
 
 // Called every frame
@@ -194,6 +196,18 @@ void AMeshBoardGenerator::SpawnHexAtHexPos(const FVector& HexPos, HexType type)
 	newHex->AttachToActor(this, FAttachmentTransformRules::KeepWorldTransform);
 
 	newHex->GetComponentByClass<UHexComponent>()->Type = type;
+}
+
+void AMeshBoardGenerator::GenerateAdjacentHexes()
+{
+	TArray<AActor*> Hexes;
+	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Hex")), Hexes);
+	
+	for (AActor* hex : Hexes)
+	{	
+		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
+		hexComp->GetAdjacentHexes(SeparationDist * 2 + 2, &Hexes);
+	}
 }
 
 
