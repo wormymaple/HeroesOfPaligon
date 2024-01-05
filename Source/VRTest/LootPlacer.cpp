@@ -37,63 +37,10 @@ void ALootPlacer::OnConstruction(const FTransform& Transform)
 
 void ALootPlacer::PlaceLoot()
 {
-	TArray<AActor*> Hexes = GetHexes();
-
-	for (AActor* hex : Hexes)
-	{
-		UHexComponent* hexComp = hex->GetComponentByClass<UHexComponent>();
-		if (!LootHexes.Contains(hexComp->Type)) continue;
-		
-		float goldChance = FMath::RandRange(0.0, 1.0);
-		if (goldChance > GoldChance) continue;
-		
-		AActor* newGold = GetWorld()->SpawnActor(GoldPiece->GeneratedClass);
-		newGold->SetActorLocation(hex->GetActorLocation() + GoldOffset);
-
-		hexComp->AddLoot(newGold);
-	}
 }
 
 void ALootPlacer::PlaceEnemies()
 {
-	// Destroy all enemies
-	TArray<AActor*> Enemies;
-	UGameplayStatics::GetAllActorsWithTag(GetWorld(), FName(TEXT("Enemy")), Enemies);
-	for (AActor* enemy : Enemies) GetWorld()->DestroyActor(enemy);
-
-	TArray<AActor*> Hexes = GetHexes(); // Get hexes in world
-	TArray<AActor*> UsedHexes;
-
-	float rot = 360.0 / BlobCount;
-	for (int i = 0; i < BlobCount; i += 1)
-	{
-		FVector2D blobPos = CircleRadius * FVector2D(1, 0).GetRotated(rot * i);
-
-		AActor* closestHex = Hexes[0];
-		float closestDist = 9999999999;
-		for (AActor* hex : Hexes)
-		{
-			FVector hexPos = hex->GetActorLocation();
-			FVector2D hexPos2D = FVector2D(hexPos.X, hexPos.Y);
-			float dist = FVector2D::Distance(hexPos2D, blobPos);
-
-			if (dist >= closestDist || hex->GetComponentByClass<UHexComponent>()->Type == HexType::Water) continue;
-			
-			closestDist = dist;
-			closestHex = hex;
-		}
-
-		SpawnEnemy(closestHex->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + EnemyOffset);
-
-		UHexComponent* hexComp = closestHex->GetComponentByClass<UHexComponent>();
-		hexComp->GetAdjacentHexes(10, &Hexes);
-		int hexCount = hexComp->AdjacentHexes.Num();
-		int spawnCount = EnemySpawnCount > hexCount ? hexCount : EnemySpawnCount;
-		for (int j = 0; j < spawnCount; j += 1)
-		{
-			SpawnEnemy(hexComp->AdjacentHexes[j]->GetOwner()->GetComponentByClass<UStaticMeshComponent>()->GetComponentLocation() + EnemyOffset);
-		}
-	}
 }
 
 TArray<AActor*> ALootPlacer::GetHexes()

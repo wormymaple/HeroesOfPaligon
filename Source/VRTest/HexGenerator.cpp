@@ -49,34 +49,6 @@ void AHexGenerator::GenerateHexes()
 	}
 	
 	Hexes.Empty();
-	
-	float lh = FMath::Sqrt(FMath::Pow(Dist, 2.f) - FMath::Pow(Dist / 2, 2.f));
-	FVector pos = GetActorLocation();
-	float depthX = -((SideWidth - 1) / 2.f) * Dist + pos.X, depthY = (SideWidth - 1) * lh + pos.Y;
-
-	int hexCount = 0;
-	for (int i = 0; i < SideWidth + SideWidth - 1; i++){
-		int layerCount, shiftDir;	
-		layerCount = i < SideWidth ? SideWidth + i : (2 * SideWidth) - (i % SideWidth) - 2;
-		shiftDir = i < SideWidth - 1 ? -1 : 1; 
-
-		for (int j = 0; j < layerCount; j += 1){
-			FActorSpawnParameters Params;
-			FVector SpawnPoint = FVector(depthX + (j * Dist), depthY, SpawnOffset.Z);
-
-			AActor* NewHex = GetWorld()->SpawnActor<AActor>(HexBlueprint->GeneratedClass, Params);
-			NewHex->SetActorLabel(FString::Printf(TEXT("Hex%i"), hexCount));
-			NewHex->SetActorLocation(SpawnPoint);
-			NewHex->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-			NewHex->GetComponentByClass<UStaticMeshComponent>()->SetMobility(EComponentMobility::Static);
-
-			Hexes.Add(NewHex);
-			hexCount += 1;
-		}
-
-		depthX += (Dist / 2) * shiftDir;
-		depthY -= lh;
-	}
 }
 
 

@@ -20,6 +20,9 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere)
+	FVector2D NoisePosition;
+	
+	UPROPERTY(EditAnywhere)
 	float NoiseScale;
 
 	UPROPERTY(EditAnywhere)

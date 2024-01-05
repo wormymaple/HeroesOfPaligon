@@ -26,7 +26,7 @@ TArray<FVector> APlainsMeshModifier::GetHexOffsets(TArray<FVector> hexPositions)
 
 	for (FVector hexPosition : hexPositions)
 	{
-		FVector noisePos = hexPosition * NoiseScale;
+		FVector noisePos = (hexPosition + FVector(NoisePosition.X, NoisePosition.Y, 0)) * NoiseScale;
 		float noise = FMath::Clamp(FMath::PerlinNoise2D(FVector2D(noisePos.X, noisePos.Y)) + NoiseOffset, 0, 1 + NoiseOffset);
 
 		positions.Add(FVector(hexPosition.X, hexPosition.Y, noise * NoiseHeight));
